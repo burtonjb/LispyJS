@@ -6,9 +6,26 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <!-- page content -->
+    <div>
+      <div>
+        <textarea rows="40" cols="50" id="ta-program">
+          (begin (define r 10) (define pi 3.1415) (* pi (* r r)))
+        </textarea>
+      </div>
+      <div>
+        <textarea rows="5" cols="50" id="ta-output">
+        </textarea>
+      </div>
+    </div>
+    <div>
+      <button type="button" id="btn-run">Run</button>
+      <button type="button" id="btn-format">Format</button>
+      <button type="button" id="btn-unformat">Unformat</button>
+    </div>
   </body>
   <script type="text/javascript" src="/scheme_parser.js"></script>
   <script type="text/javascript" src="/environment.js"></script>
   <script type="text/javascript" src="/scheme_runtime.js"></script>
+  <script type="text/javascript" src="test_cases.js"></script>
+  <script type="text/javascript" src="/ide.js"></script>
 </html>
