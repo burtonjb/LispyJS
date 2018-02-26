@@ -2,6 +2,8 @@
  * This file handles the actual runtime for the scheme environment including walking the AST
  */
 
+
+//TODO: clean this up, move logic out to separate functions at least.
 function s_eval(expression, environment = standard_env()) {
     if (typeof(expression) === 'string') {
         //this is a variable reference
@@ -27,10 +29,33 @@ function s_eval(expression, environment = standard_env()) {
         var _ = expression[0]; //this is 'define'. It just gets thrown out
         var symbol = expression[1]; // this is the name for the variable
         var value = expression[2]; // this is the value for the variable
-        if (environment[symbol] === undefined) {
+        if (environment[symbol] === undefined) { //define will only be able to define undefined stuff
             environment[symbol] = s_eval(value, environment);
         } else {
             throw "RuntimeError: symbol " + symbol + " is already defined";
+        }
+    } else if (expression[0] === 'quote') {
+        return expression[1]; //return the first argument from quote
+    } else if (expression[0] === 'set!') {
+        var symbol = expression[1];
+        var value = expression[2];
+        if (environment[symbol] !== undefined) { //set will only be able to set stuff that's already defined
+            environment[symbol] = value;
+        } else {
+            throw "RuntimeError: symbol " + symbol + " has not been defined";
+        }
+    } else if (expression[0] === 'lambda') {
+        var params = expression[1];
+        var body = expression[2];
+        return function(args) {
+            if (args.length !== params.length) {
+                throw "RuntimeError: called lambda " + body + " with the wrong arguments ( " + args + " )";
+            }
+            //FIXME: fix the fact that the lambda is currently writing to the global scope
+            for (var i = 0; i < params.length; i++) {
+                environment[params[i]] = args[i];
+            }
+            return s_eval(body, environment); 
         }
     } else {
         //Any other case is a procedure call

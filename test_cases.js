@@ -53,6 +53,17 @@ var test_cases = {
     'not equals': {
         'input': '( begin( if( != 2 1) 10 0))',
         'expected': '10'
+    },
+    'lambda': {
+        'input': '( begin ( define add  ( lambda   ( x y)   ( + x y))) ( add 10 20))',
+        'expected': '30'
+    },
+    'lambda minus': {
+        'input': '( begin ( define -  ( lambda   ( x y)   ( + x    ( * -1 y))))  (- 10 2))',
+        'expected': '8'
+    }, 'upto': {
+        'input': '( begin ( define -  ( lambda   ( x y)   ( + x    ( * -1 y)))) ( - 10 2) ( define upto  ( lambda   ( a)   ( if    ( == a 1) a    ( + a     ( upto      ( - a 1)))))) ( upto 30))',
+        'expected': '465'
     }
 };
 
@@ -63,7 +74,7 @@ for (var i = 0; i < keys.length; i++) {
         var out = s_eval(parse(test_case.input));
     } catch (e) {
         console.log(e);
-        console.log(test_case.input);        
+        console.log(test_case.input);
     }
     if (test_case.expected != out) {
         //I'll only print failures for now

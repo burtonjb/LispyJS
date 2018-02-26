@@ -1,0 +1,5 @@
+TODO.txt
+* val for undefined variable does not throw an error (it should!)
+* bracket matching in the text input does not work, and its hard to do
+* missing values are hard to debug [for example (define (lambda (x) (+ 10 x))) is missing the variable to define. It does not throw a useful error message] 
+* global scoping for lambdas right now...
