@@ -4,10 +4,16 @@
 
 
 //TODO: clean this up, move logic out to separate functions at least.
-function s_eval(expression, environment = standard_env()) {
+function s_eval(expression, environment = global_env()) {
     if (typeof(expression) === 'string') {
         //this is a variable reference
-        return environment[expression];
+        try {
+            return environment.find(expression);
+        } catch (e) {
+            console.log(e);
+            throw "RuntimeError: expression '" + expression[0] + "' is not defined (context is: " + expression + ").";
+        }
+
     } else if (typeof(expression) === 'number') {
         return expression;
     } else if (expression[0] === 'if') {
@@ -29,8 +35,8 @@ function s_eval(expression, environment = standard_env()) {
         var _ = expression[0]; //this is 'define'. It just gets thrown out
         var symbol = expression[1]; // this is the name for the variable
         var value = expression[2]; // this is the value for the variable
-        if (environment[symbol] === undefined) { //define will only be able to define undefined stuff
-            environment[symbol] = s_eval(value, environment);
+        if (environment.find_this_level(symbol) === undefined) { //define will only be able to define undefined stuff
+            environment.set(symbol, s_eval(value, environment));
         } else {
             throw "RuntimeError: symbol " + symbol + " is already defined";
         }
@@ -39,23 +45,23 @@ function s_eval(expression, environment = standard_env()) {
     } else if (expression[0] === 'set!') {
         var symbol = expression[1];
         var value = expression[2];
-        if (environment[symbol] !== undefined) { //set will only be able to set stuff that's already defined
-            environment[symbol] = value;
+        if (environment.find_this_level(symbol) !== undefined) { //set will only be able to set stuff that's already defined
+            environment.set(symbol, value);
         } else {
             throw "RuntimeError: symbol " + symbol + " has not been defined";
         }
     } else if (expression[0] === 'lambda') {
         var params = expression[1];
         var body = expression[2];
-        return function(args) {
-            if (args.length !== params.length) {
-                throw "RuntimeError: called lambda " + body + " with the wrong arguments ( " + args + " )";
+        var newEnvironment = new_env({}, environment);
+        return function(l_args) {
+            if (l_args.length !== params.length) {
+                throw "RuntimeError: called lambda " + body + " with the wrong arguments ( " + l_args + " )";
             }
-            //FIXME: fix the fact that the lambda is currently writing to the global scope
             for (var i = 0; i < params.length; i++) {
-                environment[params[i]] = args[i];
+                newEnvironment.set(params[i], l_args[i]);
             }
-            return s_eval(body, environment); 
+            return s_eval(body, newEnvironment);
         }
     } else {
         //Any other case is a procedure call

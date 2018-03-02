@@ -1,5 +1,46 @@
 TODO.txt
-* val for undefined variable does not throw an error (it should!)
+
 * bracket matching in the text input does not work, and its hard to do
 * missing values are hard to debug [for example (define (lambda (x) (+ 10 x))) is missing the variable to define. It does not throw a useful error message] 
-* global scoping for lambdas right now...
+
+
+
+
+
+
+# on even numbers it will recurse infinitely
+
+( begin
+ ( define fib
+  ( lambda
+   ( a)
+   ( if
+    ( == a 0) 0
+    ( if
+     ( == 1 a) 1
+     ( +
+      ( fib
+       ( - a 2))
+      ( fib
+       ( - a 1)))))))
+ ( fib 10)
+)
+
+
+# actual scheme that works
+
+( begin
+ ( define fib
+  ( lambda
+   ( a)
+   ( if
+    ( equal? a 0) 0
+    ( if
+     ( equal? 1 a) 1
+     ( +
+      ( fib
+       ( - a 2))
+      ( fib
+       ( - a 1)))))))
+ ( fib 10)
+)

@@ -36,7 +36,7 @@ function standard_env() {
         }
     };
 
-    var env = {
+    var standard_env = {
         'begin': function(args) {
             return args[args.length - 1];
         },
@@ -70,9 +70,50 @@ function standard_env() {
         },
         'val': function(args) {
             return args;
+        },
+        '-': function(args) {
+            //minus is defined as first value - rest of args. 
+            return args.reduce(function(acc, currentVal) {
+                return acc - currentVal;
+            });
         }
+    }
+    return standard_env;
+};
+
+function new_env(env, parent) {
+    var find = function(env, parent) {
+        return function(arg) {
+            if (env[arg] === undefined) {
+                return parent.find(arg);
+            } else {
+                return env[arg];
+            }
+        }
+    };
+    var set = function(env) {
+        return function(key, value) {
+            env[key] = value;
+        }
+    };
+    var find_this_level = function(env) {
+        return function(arg) {
+            return env[arg];
+        }
+    }
+    var env = {
+        'find': find(env, parent),
+        'set': set(env),
+        'find_this_level': find_this_level(env),
+        '_env': env,
+        '_parent': parent
     }
     return env;
 }
 
-var global_env = standard_env();
+function global_env() {
+    return new_env(standard_env(), {'find': function(arg) {
+        throw "RuntimeException: RuntimeError: behavior for expression '" + arg + "' is not defined";
+    }
+});
+}

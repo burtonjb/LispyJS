@@ -1,8 +1,6 @@
 //This file has the application test cases.
 //I don't know if I'll actually do it in a smart way, but at least there will be some 
 //tests somewhere (since this is getting pretty complicated)
-
-//these will eventually be copied to the UI too, so its not wasted effort!
 "use strict";
 
 var test_cases = {
@@ -58,12 +56,17 @@ var test_cases = {
         'input': '( begin ( define add  ( lambda   ( x y)   ( + x y))) ( add 10 20))',
         'expected': '30'
     },
-    'lambda minus': {
-        'input': '( begin ( define -  ( lambda   ( x y)   ( + x    ( * -1 y))))  (- 10 2))',
+    'minus': {
+        'input': '( begin (- 10 2))',
         'expected': '8'
-    }, 'upto': {
-        'input': '( begin ( define -  ( lambda   ( x y)   ( + x    ( * -1 y)))) ( - 10 2) ( define upto  ( lambda   ( a)   ( if    ( == a 1) a    ( + a     ( upto      ( - a 1)))))) ( upto 30))',
-        'expected': '465'
+    },
+    'upto': {
+        'input': '( begin ( define upto  ( lambda   ( a)   ( if    ( <= a 1) a    ( + a     ( upto      ( - a 1)))))) ( upto 5))',
+        'expected': '15'
+    },
+    'dynamic_scoping': {
+        'input': '( begin (define x 33) ( define add  ( lambda   ( x y)   ( + x y))) ( define sum (add (add 10 20) (add 30 40))) ( + x sum))',
+        'expected': '133'
     }
 };
 
@@ -78,6 +81,7 @@ for (var i = 0; i < keys.length; i++) {
     }
     if (test_case.expected != out) {
         //I'll only print failures for now
+        console.log(test_case.expected, out);
         alert("Warning, test case for " + keys[i] + " failed!");
     }
 }
