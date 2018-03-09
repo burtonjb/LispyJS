@@ -67,6 +67,10 @@ var test_cases = {
     'dynamic_scoping': {
         'input': '( begin (define x 33) ( define add  ( lambda   ( x y)   ( + x y))) ( define sum (add (add 10 20) (add 30 40))) ( + x sum))',
         'expected': '133'
+    },
+    'fib_example': {
+        'input': '( begin ( define fib ( lambda ( a) ( if ( equal? a 0) 0 ( if ( equal? 1 a) 1 ( + ( fib ( - a 2)) ( fib ( - a 1))))))) ( fib 10))',
+        'expected': '55'
     }
 };
 

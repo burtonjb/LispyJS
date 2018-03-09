@@ -52,7 +52,7 @@ formatButton.onclick = function() {
 
 unformatButton.onclick = function() {
     var input = textInput.value;
-    var out = input.replace(/\n/g, '').replace(/\t/g, '');
+    var out = input.replace(/\n/g, '').replace(/\t/g, '').replace(/\s+/g,' ');
     textInput.value = out;
 }
 

@@ -1,12 +1,15 @@
 /*
- * This file will handle creating the standard environment and eventually the lexical scoping for the environments
- */
+ * This file will handle creating the standard environment and eventually the dynamic scoping for the environments (to be refactored)
+*/
 
 "use strict";
 
 function standard_env() {
     var eq = function(args) {
         //TODO: do I want to fix the fact that if you pass less than 2 args, this will just return true?
+        if (args.length < 2) {
+            throw "RuntimeException: args to eq is less than 2. Args: " + args;
+        }
         for (var i = 0; i < args.length - 1; i++) {
             if (args[i] === undefined) {
                 return false;
@@ -50,11 +53,14 @@ function standard_env() {
                 return acc * currentVal;
             });
         },
-        '==': function(args) {
+        '==': function(args) { //TODO: remove this, replace it with equal?
             return eq(args);
         },
         '!=': function(args) {
             return !eq(args);
+        },
+        'equal?': function(args) {
+            return eq(args);
         },
         '>': function(args) {
             return greater_than(args);
@@ -76,6 +82,9 @@ function standard_env() {
             return args.reduce(function(acc, currentVal) {
                 return acc - currentVal;
             });
+        },
+        'debug.log': function(args) {
+            console.log(args);
         }
     }
     return standard_env;
@@ -83,27 +92,23 @@ function standard_env() {
 
 function new_env(env, parent) {
     var find = function(env, parent) {
+        //returns the env that has the key, not the value
         return function(arg) {
             if (env[arg] === undefined) {
                 return parent.find(arg);
             } else {
-                return env[arg];
+                return env;
             }
         }
     };
-    var set = function(env) {
-        return function(key, value) {
-            env[key] = value;
-        }
-    };
     var find_this_level = function(env) {
+        //returns the env that has the key, not the value
         return function(arg) {
-            return env[arg];
+            return env;
         }
     }
     var env = {
         'find': find(env, parent),
-        'set': set(env),
         'find_this_level': find_this_level(env),
         '_env': env,
         '_parent': parent
