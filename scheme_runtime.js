@@ -2,8 +2,10 @@
  * This file handles the actual runtime for the scheme environment including walking the AST
  */
 
+"use strict";
 
 //TODO: clean this up, move logic out to separate functions at least.
+//FIXME: investigate why lists are being passed around as lists of lists instead of just lists
 function s_eval(expression, environment = global_env()) {
     
     //Primitive symbols

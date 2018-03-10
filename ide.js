@@ -19,10 +19,10 @@ function formatInput() {
 }
 
 function populateTestCasesSelector() {
-    var keys = Object.keys(test_cases);
+    var keys = Object.keys(display_test_cases);
     for (var i = 0; i < keys.length; i++) {
         var option = document.createElement("option");    
-        option.value = test_cases[keys[i]].input;
+        option.value = display_test_cases[keys[i]].input;
         option.text = keys[i];
         testCaseSelector.appendChild(option);
     }

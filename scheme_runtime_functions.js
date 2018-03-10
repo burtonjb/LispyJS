@@ -1,3 +1,5 @@
+"use strict";
+
 function find_variable_reference(expression, environment) {
     try {
         return environment.find(expression)[expression];
