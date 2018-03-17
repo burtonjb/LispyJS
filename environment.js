@@ -130,6 +130,9 @@ function standard_env() {
         'false': function(args) {
             return false;
         },
+        'null': function(args) {
+            return null;
+        },
 
         //list functions
         'list': function(args) {
@@ -153,7 +156,6 @@ function standard_env() {
         },
         'cons': function(args) {
             //TODO: fix the datatypes here. A pair of numbers cons'd together returns a pair, not a list
-            //Also (cons [1 2] 3) should be [[1 2] 3] not [1 2 3]
             var l1 = args[0];
             var l2 = args[1];
             if (Array.isArray(l2)) {

@@ -31,11 +31,16 @@ var display_test_cases = {
 
     //Custom 'equals' function (for lists and maps)
     function listEquals(expected, actual) {
-        if (expected.legnth != actual.length) {
+        if (expected.length != actual.length) {
             return false;
         } else {
             for (var i = 0; i < expected.length; i++) {
-                if (expected[i] != actual[i]) {
+                if (Array.isArray(expected[i]) && Array.isArray(actual[i])) {
+                    if (!listEquals(expected[i], actual[i])) {
+                        return false;
+                    }
+                }
+                else if (expected[i] != actual[i]) {
                     return false
                 }
             }
@@ -116,7 +121,7 @@ var display_test_cases = {
         },
         'cons_list_val_1': {
             'input': '( cons (list 1 2) 3))',
-            'expected': [1, 2, 3],
+            'expected': [[1, 2], 3],
             'custom_equality': listEquals
         },
         'length': {
@@ -140,12 +145,12 @@ var display_test_cases = {
         'filter': {
             'input': '( filter ( lambda ( x) ( = x 1)) ( list 1 2 3 4))',
             'expected': [1],
-            'custom_equality': listEquals  
+            'custom_equality': listEquals
         },
         'filter_2': {
             'input': '( filter ( lambda ( x) ( = x 1)) ( list 1 2 1 4))',
             'expected': [1, 1],
-            'custom_equality': listEquals  
+            'custom_equality': listEquals
         },
         'reduce-right': {
             'input': '( begin ( define l ( list 1 2 3 4)) ( define f ( lambda ( x y) ( + x y))) ( reduce-right f l))',
@@ -180,15 +185,17 @@ var display_test_cases = {
             console.log(e);
             console.log(test_case.input);
         }
+        var eq;
         if (test_case.custom_equality === undefined) {
-            if (test_case.expected != out) {
-                //I'll only print failures for now
-                failures = true;
-                console.log("Warning, test case for " + keys[i] + " failed!")
-                console.log(test_case.expected, out);
-            }
+            eq = test_case.expected == out;
         } else {
-            test_case.custom_equality(test_case.expected, out);
+            eq = test_case.custom_equality(test_case.expected, out);
+        }
+        if (!eq) {
+            //I'll only print failures for now
+            failures = true;
+            console.log("Warning, test case for " + keys[i] + " failed!")
+            console.log(test_case.expected, out);
         }
     }
     if (failures === true) {

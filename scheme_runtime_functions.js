@@ -50,11 +50,12 @@ function set_value(expression, environment) {
 function create_lambda(expression, env) {
     var params = expression[1];
     var body = expression[2];
-    return (function () {
+    return (function() {
         var parent_env = env;
         return function(l_args) {
             var newEnvironment = new_env({}, parent_env);
             if (l_args.length !== params.length) {
+                //TODO: investigate whether I should actually be checking the argument lengths? (does scheme's lambdas actually check that the number of args in function sig = number of input args?)
                 throw "RuntimeError: called lambda " + body + " with the wrong arguments ( " + l_args + " )";
             }
             for (var i = 0; i < params.length; i++) {
