@@ -1,6 +1,6 @@
 /*
  * This file will handle creating the standard environment and eventually the dynamic scoping for the environments (to be refactored)
-*/
+ */
 
 "use strict";
 
@@ -88,7 +88,7 @@ function standard_env() {
         },
 
         //Comparison operators
-        '=': function(args) { 
+        '=': function(args) {
             return eq(args);
         },
         '>': function(args) {
@@ -124,6 +124,12 @@ function standard_env() {
                 return a || c;
             });
         },
+        'true': function(args) {
+            return true;
+        },
+        'false': function(args) {
+            return false;
+        },
 
         //list functions
         'list': function(args) {
@@ -147,7 +153,7 @@ function standard_env() {
         },
         'cons': function(args) {
             //TODO: fix the datatypes here. A pair of numbers cons'd together returns a pair, not a list
-            //Also (cons [1 2] 3) will be [[1 2] 3] not [1 2 3]
+            //Also (cons [1 2] 3) should be [[1 2] 3] not [1 2 3]
             var l1 = args[0];
             var l2 = args[1];
             if (Array.isArray(l2)) {
@@ -187,11 +193,23 @@ function standard_env() {
             }
             return mapped_list;
         },
-        'reduce-right': function(args) {
-            //TODO
-        },
         'reduce-left': function(args) {
-            //TODO
+            var f = args[0];
+            var l = args[1];
+            var a = f([null, l[0]]);
+            for (var i = 1; i < l.length; i++) {
+                a = f([a, l[i]]);
+            }
+            return a;
+        },
+        'reduce-right': function(args) {
+            var f = args[0];
+            var l = args[1];
+            var a = f([l[l.length - 1], null]);
+            for (var i = l.length - 2; i >= 0; i--) {
+                a = f([a, l[i]]);
+            }
+            return a;
         },
 
         //Type checking functions
@@ -250,8 +268,9 @@ function new_env(env, parent) {
 }
 
 function global_env() {
-    return new_env(standard_env(), {'find': function(arg) {
-        throw "RuntimeException: RuntimeError: behavior for expression '" + arg + "' is not defined";
-    }
-});
+    return new_env(standard_env(), {
+        'find': function(arg) {
+            throw "RuntimeException: RuntimeError: behavior for expression '" + arg + "' is not defined";
+        }
+    });
 }

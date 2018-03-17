@@ -95,7 +95,6 @@ var display_test_cases = {
         },
 
         //List test cases
-        //TODO: test case for apply and map
         'car': {
             'input': '( begin (define l (list 1 2 3)) (car l))',
             'expected': 1
@@ -148,6 +147,14 @@ var display_test_cases = {
             'expected': [1, 1],
             'custom_equality': listEquals  
         },
+        'reduce-right': {
+            'input': '( begin ( define l ( list 1 2 3 4)) ( define f ( lambda ( x y) ( + x y))) ( reduce-right f l))',
+            'expected': 10
+        },
+        'reduce-left': {
+            'input': '( begin ( define l ( list 10 1 2 3)) ( define f ( lambda ( x y) ( - x y))) ( reduce-left f l))',
+            'expected': -16
+        },
 
         //type test cases
         'list': {
@@ -159,7 +166,6 @@ var display_test_cases = {
             'input': '( begin ( define x 10) ( val x))',
             'expected': 10
         }
-
     }; //these test cases will not be displayed in the UI (because they are trivial), but will still be run
 
     var test_cases = {};
