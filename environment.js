@@ -196,20 +196,21 @@ function standard_env() {
             return mapped_list;
         },
         'reduce-left': function(args) {
-            var f = args[0];
+            //FIXME: this and reduce-right would be broken for multiplication
+            var proc = args[0];
             var l = args[1];
-            var a = f([null, l[0]]);
+            var a = proc([null, l[0]]);
             for (var i = 1; i < l.length; i++) {
-                a = f([a, l[i]]);
+                a = proc([a, l[i]]);
             }
             return a;
         },
         'reduce-right': function(args) {
-            var f = args[0];
+            var proc = args[0];
             var l = args[1];
-            var a = f([l[l.length - 1], null]);
+            var a = proc([l[l.length - 1], null]);
             for (var i = l.length - 2; i >= 0; i--) {
-                a = f([a, l[i]]);
+                a = proc([a, l[i]]);
             }
             return a;
         },
@@ -230,6 +231,11 @@ function standard_env() {
         },
         'null?': function(args) {
             return args === null;
+        },
+
+        //metaprogramming
+        'eval': function(args) {
+            return s_eval(args[0]);
         },
 
         //custom functions

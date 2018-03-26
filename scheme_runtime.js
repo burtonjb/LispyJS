@@ -54,6 +54,7 @@ function s_eval(expression, environment = global_env()) {
             return proc(args);
         } catch (e) {
             console.log(e);
+            console.log("proc was " + proc);
             throw "RuntimeError: behavior for expression '" + expression[0] + "' is not defined (context is: " + expression + ").\n Base exception was: " + e;
         }
     }

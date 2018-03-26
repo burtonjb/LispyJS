@@ -23,6 +23,10 @@ var display_test_cases = {
     'higher order list functions': {
         'input': '( begin ( define l1 ( list 1 2 3)) ( define l2 ( map ( lambda ( x) ( * x 2)) l1)) ( define l3 ( filter ( lambda ( x) ( < x 5)) l2)) ( define l4 ( apply + l3)) ( val l4))',
         'expected': 6
+    },
+    'eval': {
+        'input': '( begin ( define l ( quote ( begin ( define r 10) ( define pi 3.1415) ( * pi ( * r r))))) ( print l) (eval l))',
+        'expected': 314.15000000000003
     }
 };
 
@@ -170,6 +174,16 @@ var display_test_cases = {
         'number': {
             'input': '( begin ( define x 10) ( val x))',
             'expected': 10
+        },
+
+        //Function test cases here (Should they be in the trivial test cases?)
+        'callback': {
+            'input': '( begin (define l (lambda (x) (x 1))) (define m (lambda (x) (+ x 11))) (l m))',
+            'expected': 12
+        }, 
+        'closure': {
+            'input': '( begin ( define c ( lambda ( x) ( lambda ( y) ( + x y)))) (define d (c 5)) (d 2))',
+            'expected': 7
         }
     }; //these test cases will not be displayed in the UI (because they are trivial), but will still be run
 
