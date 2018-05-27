@@ -27,6 +27,19 @@ var display_test_cases = {
     'eval': {
         'input': '( begin ( define l ( quote ( begin ( define r 10) ( define pi 3.1415) ( * pi ( * r r))))) ( print l) (eval l))',
         'expected': 314.15000000000003
+    },
+    'sum-to-recursive': {
+        'input': '( begin ( define sum ( lambda ( n) ( if ( equal? 1 n) 1 ( + n ( sum ( - n 1)))))) ( sum 5))',
+        'expected': 15
+    },
+    //Function test cases here (Should they be in the trivial test cases?)
+    'callback': {
+        'input': '( begin (define l (lambda (x) (x 1))) (define m (lambda (x) (+ x 11))) (l m))',
+        'expected': 12
+    }, 
+    'closure': {
+        'input': '( begin ( define c ( lambda ( x) ( lambda ( y) ( + x y)))) (define d (c 5)) (d 2))',
+        'expected': 7
     }
 };
 

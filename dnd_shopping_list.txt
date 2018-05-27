@@ -3,7 +3,7 @@ ammunition (arrows, darts and daggers)
 silver dagger
 acid 
 alchemists fire
-antitoin
+antitoxin
 ball bearings
 block and tackle
 candles
@@ -18,3 +18,11 @@ tinberbox
 3 torches
 backpack
 pack of cards
+
+
+
+Attack (sword): [[1d20 + 9]] Attack (sword): [[1d20 + 9]]
+Damage: [[1d6 + 6]] Sneak Attack: [[1d6 + 2d6 + 6]]
+
+Attack (hand): [[1d20 + 8]] Damage: [[1d6 + 5]]
+Attack (bow): [[1d20 + 8]] Damage: [[1d8 + 5]]
