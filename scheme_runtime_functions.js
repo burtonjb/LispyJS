@@ -23,7 +23,7 @@ function evaluate_if_statement(expression, environment) {
     } else {
         exp = else_body;
     }
-    return s_eval(exp, environment);
+    return exp; 
 }
 
 function define_value(expression, environment) {
@@ -31,7 +31,9 @@ function define_value(expression, environment) {
     var symbol = expression[1]; // this is the name for the variable
     var value = expression[2]; // this is the value for the variable
     if (environment.find_this_level(symbol)[symbol] === undefined) { //define will only be able to define undefined stuff
-        environment.find_this_level(symbol)[symbol] = s_eval(value, environment);
+        var val = s_eval(value, environment);
+        environment.find_this_level(symbol)[symbol] = val;
+        return val;
     } else {
         throw "RuntimeError: symbol " + symbol + " is already defined";
     }
@@ -42,6 +44,7 @@ function set_value(expression, environment) {
     var value = expression[2];
     if (environment.find(symbol)[symbol] !== undefined) { //set will only be able to set stuff that's already defined
         environment.find(symbol)[symbol] = value;
+        return value;
     } else {
         throw "RuntimeError: symbol " + symbol + " has not been defined";
     }

@@ -29,7 +29,7 @@ var display_test_cases = {
         'expected': 314.15000000000003
     },
     'sum-to-recursive': {
-        'input': '( begin ( define sum ( lambda ( n) ( if ( equal? 1 n) 1 ( + n ( sum ( - n 1)))))) ( sum 5))',
+        'input': '( begin ( define sum ( lambda ( n acc) ( if ( equal? 0 n) acc ( sum ( - n 1) ( + n acc))))) ( sum 5 0))',
         'expected': 15
     },
     //Function test cases here (Should they be in the trivial test cases?)
