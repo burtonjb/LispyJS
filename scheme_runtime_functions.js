@@ -61,6 +61,6 @@ function lambda(expression, env) {
     this.body = expression[2];
     this.env = env;
 }
-lambda.prototype.call = function(args) {
+lambda.prototype.apply = function(context, args) {
     return s_eval(this.body, create_lambda_env(this.env, this.params, args))
 }

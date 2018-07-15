@@ -177,7 +177,7 @@ function standard_env() {
             var a = args[1];
             var mapped_list = []
             for (var i = 0; i < a.length; i++) {
-                mapped_list.push(proc.call([a[i]]));
+                mapped_list.push(proc.apply(null, [a[i]]));
             }
             return mapped_list;
         },
@@ -186,7 +186,7 @@ function standard_env() {
             var a = args[1];
             var mapped_list = []
             for (var i = 0; i < a.length; i++) {
-                if (proc.call([a[i]])) {
+                if (proc.apply(null, [a[i]])) {
                     mapped_list.push(a[i]);
                 }
             }
@@ -196,18 +196,18 @@ function standard_env() {
             //FIXME: this and reduce-right would be broken for multiplication
             var proc = args[0];
             var l = args[1];
-            var a = proc.call([null, l[0]]);
+            var a = proc.apply(null, [null, l[0]]);
             for (var i = 1; i < l.length; i++) {
-                a = proc.call([a, l[i]]);
+                a = proc.apply(null, [a, l[i]]);
             }
             return a;
         },
         'reduce-right': function(args) {
             var proc = args[0];
             var l = args[1];
-            var a = proc.call([l[l.length - 1], null]);
+            var a = proc.apply(null, [l[l.length - 1], null]);
             for (var i = l.length - 2; i >= 0; i--) {
-                a = proc.call([a, l[i]]);
+                a = proc.apply(null, [a, l[i]]);
             }
             return a;
         },
