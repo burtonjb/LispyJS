@@ -64,7 +64,7 @@ function create_lambda(expression, env) {
             for (var i = 0; i < params.length; i++) {
                 newEnvironment._env[params[i]] = l_args[i];
             }
-            return s_eval(body, newEnvironment);
+            return s_eval(body, newEnvironment); //?? Should this return the body and the environment instead of the evaluation?
         }
     })();
 }

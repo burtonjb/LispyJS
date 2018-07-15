@@ -8,6 +8,8 @@
 //FIXME: investigate why lists are being passed around as lists of lists instead of just lists
 function s_eval(expression, environment = global_env()) {
     while (true) {
+        console.log(expression);
+        console.log(environment);
         //console.log(expression, environment);
         //Primitive symbols
         if (typeof(expression) === 'string') {
@@ -33,6 +35,12 @@ function s_eval(expression, environment = global_env()) {
             return set_value(expression, environment);
         } else if (expression[0] === 'lambda') {
             return create_lambda(expression, environment);
+        } else if (expression[0] === 'begin') { 
+            for (var i = 1; i < expression.length - 1; i++) {
+                s_eval(expression[i], environment);
+            }
+            expression = expression[expression.length - 1];
+            continue;
         }
 
         //debug statements. I think they're currently broken and need to return a function or something

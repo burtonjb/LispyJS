@@ -43,10 +43,6 @@ function standard_env() {
 
     //Standard functions in scheme are defined here
     var standard_env = {
-        'begin': function(args) {
-            return args[args.length - 1];
-        },
-
         //basic math functions
         //TODO: these should throw if the input is not a number
         '+': function(args) {
