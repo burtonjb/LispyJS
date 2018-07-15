@@ -8,16 +8,16 @@
 //FIXME: investigate why lists are being passed around as lists of lists instead of just lists
 function s_eval(expression, environment = global_env()) {
     while (true) {
-        console.log(expression);
-        console.log(environment);
-        //console.log(expression, environment);
+        // console.log(expression);
+        // console.log(environment);
+
         //Primitive symbols
         if (typeof(expression) === 'string') {
             return find_variable_reference(expression, environment);
         } else if (typeof(expression) === 'number') {
             return expression;
 
-            //this path is for a constant
+        //this path is for a constant
         } else if (!Array.isArray(expression)) {
             return expression;
         }
@@ -26,7 +26,7 @@ function s_eval(expression, environment = global_env()) {
         var operation = expression[0];
         if (operation === 'if') {
             expression = evaluate_if_statement(expression, environment);
-            continue; // add some tail call optimization.
+            continue; 
         } else if (operation === 'define') {
             return define_value(expression, environment);
         } else if (operation === 'quote') {
@@ -34,7 +34,7 @@ function s_eval(expression, environment = global_env()) {
         } else if (operation === 'set!') {
             return set_value(expression, environment);
         } else if (expression[0] === 'lambda') {
-            return create_lambda(expression, environment);
+            return new lambda(expression, environment);
         } else if (expression[0] === 'begin') { 
             for (var i = 1; i < expression.length - 1; i++) {
                 s_eval(expression[i], environment);
@@ -57,7 +57,6 @@ function s_eval(expression, environment = global_env()) {
         }
         //function call
         else {
-            //Any other case is a procedure call
             var expressions = [];
             var all = [];
             for (var i = 0; i < expression.length; i++) {
@@ -68,13 +67,15 @@ function s_eval(expression, environment = global_env()) {
             }
             var proc = expressions.shift(); //the first in the expressions can be a proc
             var args = expressions; //other stuff in the expressions list are the args.
-            if (typeof(proc) === "function") {  //This is wrong. It should keep passing the proc to each loop until it hits a function that exists in environment
-                expression = proc(args);
-            } else {
+            if (proc instanceof lambda) {
+                expression = proc.body;
+                environment = create_lambda_env(proc.env, proc.params, args);
+                continue;
+            } else if (typeof(proc) === 'function') { //proc is a function, evaluate it
+                return proc(args);
+            } else { //proc is a list, return the list values.
                 return all;
             }
-            environment = new_env(args, environment);
-            continue;
         }
     }
 }

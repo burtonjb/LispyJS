@@ -1,5 +1,11 @@
 "use strict";
 
+//TODO: refactor this class. Instead of just returning the functions to the global namespace, return them to a namespaced object 
+//using IIFE. See below comments for example
+/*
+var runtime_functions = (function() {return functions})();
+*/
+
 function find_variable_reference(expression, environment) {
     try {
         return environment.find(expression)[expression];
@@ -23,7 +29,7 @@ function evaluate_if_statement(expression, environment) {
     } else {
         exp = else_body;
     }
-    return exp; 
+    return exp;
 }
 
 function define_value(expression, environment) {
@@ -50,21 +56,11 @@ function set_value(expression, environment) {
     }
 }
 
-function create_lambda(expression, env) {
-    var params = expression[1];
-    var body = expression[2];
-    return (function() {
-        var parent_env = env;
-        return function(l_args) {
-            var newEnvironment = new_env({}, parent_env);
-            if (l_args.length !== params.length) {
-                //TODO: investigate whether I should actually be checking the argument lengths? (does scheme's lambdas actually check that the number of args in function sig = number of input args?)
-                throw "RuntimeError: called lambda " + body + " with the wrong arguments ( " + l_args + " )";
-            }
-            for (var i = 0; i < params.length; i++) {
-                newEnvironment._env[params[i]] = l_args[i];
-            }
-            return s_eval(body, newEnvironment); //?? Should this return the body and the environment instead of the evaluation?
-        }
-    })();
+function lambda(expression, env) {
+    this.params = expression[1];
+    this.body = expression[2];
+    this.env = env;
+}
+lambda.prototype.call = function(args) {
+    return s_eval(this.body, create_lambda_env(this.env, this.params, args))
 }

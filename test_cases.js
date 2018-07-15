@@ -7,6 +7,8 @@
 
 "use strict";
 
+var _debug_failed_test_cases = [];
+
 var display_test_cases = {
     'sample': {
         'input': '(begin (define r 10) (define pi 3.1415) (* pi (* r r)))',
@@ -222,6 +224,7 @@ var display_test_cases = {
             //I'll only print failures for now
             failures = true;
             console.log("Warning, test case for " + keys[i] + " failed!")
+            _debug_failed_test_cases.push(keys[i]);
             console.log(test_case.expected, out);
         }
     }

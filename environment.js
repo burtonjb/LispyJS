@@ -171,12 +171,13 @@ function standard_env() {
         'length': function(args) {
             return args[0].length;
         },
+
         'map': function(args) {
             var proc = args[0];
             var a = args[1];
             var mapped_list = []
             for (var i = 0; i < a.length; i++) {
-                mapped_list.push(proc([a[i]]));
+                mapped_list.push(proc.call([a[i]]));
             }
             return mapped_list;
         },
@@ -185,7 +186,7 @@ function standard_env() {
             var a = args[1];
             var mapped_list = []
             for (var i = 0; i < a.length; i++) {
-                if (proc([a[i]])) {
+                if (proc.call([a[i]])) {
                     mapped_list.push(a[i]);
                 }
             }
@@ -195,18 +196,18 @@ function standard_env() {
             //FIXME: this and reduce-right would be broken for multiplication
             var proc = args[0];
             var l = args[1];
-            var a = proc([null, l[0]]);
+            var a = proc.call([null, l[0]]);
             for (var i = 1; i < l.length; i++) {
-                a = proc([a, l[i]]);
+                a = proc.call([a, l[i]]);
             }
             return a;
         },
         'reduce-right': function(args) {
             var proc = args[0];
             var l = args[1];
-            var a = proc([l[l.length - 1], null]);
+            var a = proc.call([l[l.length - 1], null]);
             for (var i = l.length - 2; i >= 0; i--) {
-                a = proc([a, l[i]]);
+                a = proc.call([a, l[i]]);
             }
             return a;
         },
@@ -269,6 +270,18 @@ function new_env(env, parent) {
         '_parent': parent
     }
     return env;
+}
+
+function create_lambda_env(parent_env, param_names, values) {
+    var newEnvironment = new_env({}, parent_env);
+    if (values.length !== param_names.length) {
+        //TODO: investigate whether I should actually be checking the argument lengths? (does scheme's lambdas actually check that the number of args in function sig = number of input args?)
+        throw "RuntimeError: called lambda " + body + " with the wrong arguments ( " + l_args + " )";
+    }
+    for (var i = 0; i < param_names.length; i++) {
+        newEnvironment._env[param_names[i]] = values[i];
+    }
+    return newEnvironment;
 }
 
 function global_env() {

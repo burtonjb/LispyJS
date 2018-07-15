@@ -42,6 +42,7 @@ runButton.onclick = function() {
         textOutput.value = out;
     } catch (e) {
         textOutput.value = e;
+        throw e;
     }
 }
 
