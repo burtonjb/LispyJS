@@ -4,13 +4,59 @@
 
 "use strict";
 
+//Environment classes and functions
+function Environment(environment, parent) {
+    this.env = environment; //this should be an object
+    this.parent = parent //this is an Environment
+}
+
+//returns the most child environment that has the argument defined
+Environment.prototype.find = function(arg) {
+    if (this.env[arg] === undefined) {
+        return this.parent.find(arg);
+    } else {
+        return this.env;
+    }
+};
+
+Environment.prototype.get_env = function() {
+    return this.env;
+}
+
+function new_env(env, parent) {
+    var env = new Environment(env, parent);
+    return env;
+}
+
+function create_lambda_env(parent_env, param_names, values) {
+    var newEnvironment = new_env({}, parent_env);
+    if (values.length !== param_names.length) {
+        //TODO: investigate whether I should actually be checking the argument lengths? (does scheme's lambdas actually check that the number of args in function sig = number of input args?)
+        throw "RuntimeError: called lambda " + body + " with the wrong arguments ( " + l_args + " )";
+    }
+    for (var i = 0; i < param_names.length; i++) {
+        newEnvironment.env[param_names[i]] = values[i];
+    }
+    return newEnvironment;
+}
+
+function global_env() {
+    return new_env(standard_env(), {
+        'find': function(arg) {
+            throw "RuntimeException: RuntimeError: behavior for expression '" + arg + "' is not defined";
+        }
+    });
+}
+
 function standard_env() {
+    //TODO: add importing functionality
+    //TODO: split this up into modules
+
     //TODO: add in stuff to throw errors if the number of args is wrong for some of these functions
     //TODO: add in some type checking in here
 
     //These are helper methods
     var eq = function(args) {
-        //TODO: do I want to fix the fact that if you pass less than 2 args, this will just return true?
         if (args.length < 2) {
             throw "RuntimeException: args to eq is less than 2. Args: " + args;
         }
@@ -44,7 +90,7 @@ function standard_env() {
     //Standard functions in scheme are defined here
     var standard_env = {
         //basic math functions
-        //TODO: these should throw if the input is not a number
+        //TODO: these should throw if the input is not a number?
         '+': function(args) {
             return args.reduce(function(acc, currentVal) {
                 return acc + currentVal;
@@ -77,7 +123,7 @@ function standard_env() {
         },
         //TODO: For max and min - throw an error if NaN?
         'max': function(args) {
-            return Math.max(...args); //Using cool js spread syntax here
+            return Math.max(...args);
         },
         'min': function(args) {
             return Math.min(...args);
@@ -120,15 +166,9 @@ function standard_env() {
                 return a || c;
             });
         },
-        'true': function(args) {
-            return true;
-        },
-        'false': function(args) {
-            return false;
-        },
-        'null': function(args) {
-            return null;
-        },
+        'true': true,
+        'false': false,
+        'null': null,
 
         //list functions
         'list': function(args) {
@@ -193,10 +233,9 @@ function standard_env() {
             return mapped_list;
         },
         'reduce-left': function(args) {
-            //FIXME: this and reduce-right would be broken for multiplication
             var proc = args[0];
             var l = args[1];
-            var a = proc.apply(null, [null, l[0]]);
+            var a = l[0]; //a (accumulator) can be the first element because the first operation of reduce should f(l[0], identity), which should be l[0]
             for (var i = 1; i < l.length; i++) {
                 a = proc.apply(null, [a, l[i]]);
             }
@@ -205,7 +244,7 @@ function standard_env() {
         'reduce-right': function(args) {
             var proc = args[0];
             var l = args[1];
-            var a = proc.apply(null, [l[l.length - 1], null]);
+            var a = l[l.length - 1]; //same comment as reduce-left
             for (var i = l.length - 2; i >= 0; i--) {
                 a = proc.apply(null, [a, l[i]]);
             }
@@ -216,7 +255,7 @@ function standard_env() {
         'number?': function(args) {
             return (typeof(args) === 'number');
         },
-        'procedure?': function(args) {
+        'lambda?': function(args) {
             return (typeof(args) === "function"); //TODO: double check this
         },
         'list?': function(args) {
@@ -241,53 +280,8 @@ function standard_env() {
         },
         'print': function(args) {
             console.log(args);
+            return args;
         }
     }
     return standard_env;
 };
-
-function new_env(env, parent) {
-    var find = function(env, parent) {
-        //returns the env that has the key, not the value
-        return function(arg) {
-            if (env[arg] === undefined) {
-                return parent.find(arg);
-            } else {
-                return env;
-            }
-        }
-    };
-    var find_this_level = function(env) {
-        //returns the env that has the key, not the value
-        return function(arg) {
-            return env;
-        }
-    }
-    var env = {
-        'find': find(env, parent),
-        'find_this_level': find_this_level(env),
-        '_env': env,
-        '_parent': parent
-    }
-    return env;
-}
-
-function create_lambda_env(parent_env, param_names, values) {
-    var newEnvironment = new_env({}, parent_env);
-    if (values.length !== param_names.length) {
-        //TODO: investigate whether I should actually be checking the argument lengths? (does scheme's lambdas actually check that the number of args in function sig = number of input args?)
-        throw "RuntimeError: called lambda " + body + " with the wrong arguments ( " + l_args + " )";
-    }
-    for (var i = 0; i < param_names.length; i++) {
-        newEnvironment._env[param_names[i]] = values[i];
-    }
-    return newEnvironment;
-}
-
-function global_env() {
-    return new_env(standard_env(), {
-        'find': function(arg) {
-            throw "RuntimeException: RuntimeError: behavior for expression '" + arg + "' is not defined";
-        }
-    });
-}

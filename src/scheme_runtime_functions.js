@@ -6,6 +6,8 @@
 var runtime_functions = (function() {return functions})();
 */
 
+
+//For all these methods the first parameter is the method (so 'if', 'define', etc)
 function find_variable_reference(expression, environment) {
     try {
         return environment.find(expression)[expression];
@@ -16,30 +18,27 @@ function find_variable_reference(expression, environment) {
 }
 
 function evaluate_if_statement(expression, environment) {
-    var _ = expression[0]; //this is just 'if', so it gets thrown out
-    var test = expression[1]; //this is the test method (==, >, <, ...);
+    //if statements example: (if (= x 1) (+ x 1) (- x 1))
+    if (expression.length != 4) {
+        throw "RuntimeError: wrong number of arguments passed to if statement: " + expression;
+    }
+    var test = expression[1]; //this is the test method (=, >, <, ...);
     var then_body = expression[2]; //this is the expression for the then statement	
-    if (expression.length < 3) {
-        throw "RuntimeError: else statement for if must be defined for expression: " + expression;
-    }
     var else_body = expression[3]; //this is the expression for the else statement
-    var exp;
     if (s_eval(test, environment)) {
-        exp = then_body;
+        return then_body;
     } else {
-        exp = else_body;
+        return else_body;
     }
-    return exp;
 }
 
 function define_value(expression, environment) {
-    var _ = expression[0]; //this is 'define'. It just gets thrown out
     var symbol = expression[1]; // this is the name for the variable
     var value = expression[2]; // this is the value for the variable
-    if (environment.find_this_level(symbol)[symbol] === undefined) { //define will only be able to define undefined stuff
+    if (environment.get_env()[symbol] === undefined) { //define will only be able to define undefined stuff
         var val = s_eval(value, environment);
-        environment.find_this_level(symbol)[symbol] = val;
-        return val;
+        environment.get_env()[symbol] = val;
+        return val; //return the value so you can have (define x (define y 100))
     } else {
         throw "RuntimeError: symbol " + symbol + " is already defined";
     }
@@ -62,5 +61,6 @@ function lambda(expression, env) {
     this.env = env;
 }
 lambda.prototype.apply = function(context, args) {
+    //the context param is not used here, but its used in function.apply and I need the signatures to match
     return s_eval(this.body, create_lambda_env(this.env, this.params, args))
 }

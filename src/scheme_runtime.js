@@ -1,16 +1,12 @@
 /*
  * This file handles the actual runtime for the scheme environment including walking the AST
+ * Tail call optimization has been implemented, that's why there's a while true loop
  */
 
 "use strict";
 
-//TODO: clean this up, move logic out to separate functions at least.
-//FIXME: investigate why lists are being passed around as lists of lists instead of just lists
 function s_eval(expression, environment = global_env()) {
     while (true) {
-        // console.log(expression);
-        // console.log(environment);
-
         //Primitive symbols
         if (typeof(expression) === 'string') {
             return find_variable_reference(expression, environment);
@@ -30,7 +26,7 @@ function s_eval(expression, environment = global_env()) {
         } else if (operation === 'define') {
             return define_value(expression, environment);
         } else if (operation === 'quote') {
-            return expression[1]; //return the first argument from quote
+            return expression[1]; //return the first argument from quote (the first s-expression passed to quote). Do not evaluate it
         } else if (operation === 'set!') {
             return set_value(expression, environment);
         } else if (expression[0] === 'lambda') {
@@ -43,8 +39,6 @@ function s_eval(expression, environment = global_env()) {
             continue;
         }
 
-        //debug statements. I think they're currently broken and need to return a function or something
-        //FIXME: test and check these
         else if (expression[0] === 'debug.logEnv') {
             console.log(environment);
             return;
@@ -55,27 +49,29 @@ function s_eval(expression, environment = global_env()) {
             }
             return;
         }
+
         //function call
         else {
-            var expressions = [];
-            var all = [];
+            var evaluations = [];
             for (var i = 0; i < expression.length; i++) {
                 var e = expression[i];
                 var v = s_eval(e, environment);
-                expressions.push(v);
-                all.push(v);
+                evaluations.push(v);
             }
-            var proc = expressions.shift(); //the first in the expressions can be a proc
-            var args = expressions; //other stuff in the expressions list are the args.
+            var all = evaluations.slice();
+            var proc = evaluations.shift(); //the first in the expressions can be a proc
+            var args = evaluations; //other stuff in the expressions list are the args.
             if (proc instanceof lambda) {
                 expression = proc.body;
                 environment = create_lambda_env(proc.env, proc.params, args);
                 continue;
-            } else if (typeof(proc) === 'function') { //proc is a function, evaluate it
-                return proc(args);
-            } else { //proc is a list, return the list values.
-                return all;
-            }
+            } else //proc is a function, evaluate it
+                try {
+                   return proc(args);
+                } catch (e) {
+                    console.log(e, expression, evaluations);
+                    throw "expression '" + proc + "'' is not a function. Context is: " + all;
+                }
         }
     }
 }

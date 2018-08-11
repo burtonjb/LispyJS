@@ -6,34 +6,47 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
+    <div class="content">
+      <div class="code-left-side">
+        <div>
+          <div class="code-examples">
+            <span>Code examples</span>
+              <select id="select-test-cases">
+            </select>
+          </div>
+          <div class="code-input">
+            <textarea rows="40" cols="50" id="ta-program">
+            (begin (define r 10) (define pi 3.1415) (* pi (* r r)))
+            </textarea>
+          </div>
+          <div class="code-output">
+            <textarea rows="5" cols="50" id="ta-output">
+            </textarea>
+          </div>
+        </div>
+        <div class="button-container">
+          <button type="button" id="btn-run">Run</button>
+          <button type="button" id="btn-format">Format</button>
+          <button type="button" id="btn-unformat">Unformat</button>
+          <button type="button" id="btn-save">Save</button>
+        </div>
+      </div>
+      <div class="code-history">
+        <div class="button-container">
+          <button type="button" id="clear-history">Clear history</button>
+        </div>
+        <ul id="code-history-list">
+        </ul>
+      </div>
     <div>
-      <div>
-      <span>Code examples</span>
-      <select id="select-test-cases">
-      </select>
-      </div>
-      <div>
-        <textarea rows="40" cols="50" id="ta-program">
-        (begin (define r 10) (define pi 3.1415) (* pi (* r r)))
-        </textarea>
-      </div>
-      <div>
-        <textarea rows="5" cols="50" id="ta-output">
-        </textarea>
-      </div>
-    </div>
-    <div>
-      <button type="button" id="btn-run">Run</button>
-      <button type="button" id="btn-format">Format</button>
-      <button type="button" id="btn-unformat">Unformat</button>
-    </div>
   </body>
-  <script type="text/javascript" src="scheme_parser.js"></script>
-  <script type="text/javascript" src="environment.js"></script>
-  <script type="text/javascript" src="scheme_runtime.js"></script>
-  <script type="text/javascript" src="scheme_runtime_functions.js"></script>
-  <script type="text/javascript" src="test_cases.js"></script>
-  <script type="text/javascript" src="debug_utils.js"></script>
+  <!-- Include all javascript files below -->
+  <script type="text/javascript" src="src/scheme_parser.js"></script>
+  <script type="text/javascript" src="src/environment.js"></script>
+  <script type="text/javascript" src="src/scheme_runtime.js"></script>
+  <script type="text/javascript" src="src/scheme_runtime_functions.js"></script>
+  <script type="text/javascript" src="src/test_cases.js"></script>
+  <script type="text/javascript" src="src/debug_utils.js"></script>
   <script type="text/javascript" src="ide.js"></script>
 
 </html>

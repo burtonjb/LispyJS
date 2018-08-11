@@ -177,7 +177,7 @@ var display_test_cases = {
         },
         'reduce-left': {
             'input': '( begin ( define l ( list 10 1 2 3)) ( define f ( lambda ( x y) ( - x y))) ( reduce-left f l))',
-            'expected': -16
+            'expected': 4
         },
 
         //type test cases

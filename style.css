@@ -1,0 +1,13 @@
+.content {
+	display: flex;
+	flex-direction: row;
+}
+
+.code-left-side {
+	flex: 6;
+}
+
+.code-history {
+	flex: 6;
+}
+

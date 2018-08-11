@@ -44,24 +44,3 @@ function atomize(str) {
     }
     return n;
 }
-
-function pretty_print(parsed_input, indent = 0) {
-    formattedInputString += "\n";
-    for (var i = 0; i < indent; i++) {
-        formattedInputString += " ";
-    }
-    formattedInputString += "(";
-    for (var i = 0; i < parsed_input.length; i++) {
-        if (typeof(parsed_input[i]) !== 'object') {
-            formattedInputString += " ";
-            formattedInputString += parsed_input[i];
-        } else {
-            pretty_print(parsed_input[i], indent + 1);
-            formattedInputString += ")";
-        }
-    }
-    if (indent === 0) {
-        formattedInputString += "\n)";
-    }
-    return formattedInputString;
-};
