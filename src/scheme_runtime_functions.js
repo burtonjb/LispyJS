@@ -48,7 +48,7 @@ function set_value(expression, environment) {
     var symbol = expression[1];
     var value = expression[2];
     if (environment.find(symbol)[symbol] !== undefined) { //set will only be able to set stuff that's already defined
-        environment.find(symbol)[symbol] = value;
+        environment.find(symbol)[symbol] = s_eval(value, environment);
         return value;
     } else {
         throw "RuntimeError: symbol " + symbol + " has not been defined";

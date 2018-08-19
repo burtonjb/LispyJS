@@ -1,5 +1,5 @@
 /*
- * This file will handle creating the standard environment and eventually the dynamic scoping for the environments (to be refactored)
+ * This file will handle creating the standard environment 
  */
 
 "use strict";
@@ -28,11 +28,11 @@ function new_env(env, parent) {
     return env;
 }
 
-function create_lambda_env(parent_env, param_names, values) {
+function create_lambda_env(parent_env, param_names, values, lambda) {
     var newEnvironment = new_env({}, parent_env);
     if (values.length !== param_names.length) {
         //TODO: investigate whether I should actually be checking the argument lengths? (does scheme's lambdas actually check that the number of args in function sig = number of input args?)
-        throw "RuntimeError: called lambda " + body + " with the wrong arguments ( " + l_args + " )";
+        throw "RuntimeError: called lambda " + lambda.body + " with wrong number of args. Got: " + values.length + ", expected: " + param_names.length;
     }
     for (var i = 0; i < param_names.length; i++) {
         newEnvironment.env[param_names[i]] = values[i];
@@ -48,6 +48,7 @@ function global_env() {
     });
 }
 
+//Standard environment - all built in functions
 function standard_env() {
     //TODO: add importing functionality
     //TODO: split this up into modules

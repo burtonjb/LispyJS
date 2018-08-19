@@ -18,15 +18,17 @@ function parse(str) {
     return read_from_tokens(tokenize(str));
 }
 
-function read_from_tokens(tokens) {
+function read_from_tokens(tokens, parsed_tokens = []) {
     if (tokens.length === 0) {
-        throw "ParseError: there were no tokens found";
+        var i_slice = Math.max(0, parsed_tokens.length - 5);
+        throw "ParseError: there were no tokens found. Last 5 read tokens were: " + parsed_tokens.slice(i_slice, parsed_tokens.length);
     }
     var token = tokens.shift();
+    parsed_tokens.push(token);
     if (token === "(") {
         var child_tokens = [];
         while (tokens[0] != ')') {
-            child_tokens.push(read_from_tokens(tokens));
+            child_tokens.push(read_from_tokens(tokens, parsed_tokens));
         }
         tokens.shift(); //remove the last ")"
         return child_tokens;

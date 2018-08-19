@@ -63,7 +63,7 @@ function s_eval(expression, environment = global_env()) {
             var args = evaluations; //other stuff in the expressions list are the args.
             if (proc instanceof lambda) {
                 expression = proc.body;
-                environment = create_lambda_env(proc.env, proc.params, args);
+                environment = create_lambda_env(proc.env, proc.params, args, proc);
                 continue;
             } else //proc is a function, evaluate it
                 try {
