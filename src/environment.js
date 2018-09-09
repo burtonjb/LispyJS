@@ -282,6 +282,10 @@ function standard_env() {
         'print': function(args) {
             console.log(args);
             return args;
+        },
+        'trace': function(args){
+            console.trace();
+            return args;
         }
     }
     return standard_env;
