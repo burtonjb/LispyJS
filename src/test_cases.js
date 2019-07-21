@@ -2,9 +2,6 @@
 //I don't know if I'll actually do it in a smart way, but at least there will be some 
 //tests somewhere (since this is getting pretty complicated)
 
-//TODO: move some of the test cases to another html file so that I won't
-//be running ALL the test cases everytime I load the page
-
 "use strict";
 
 var _debug_failed_test_cases = [];
@@ -107,8 +104,12 @@ var display_test_cases = {
             'input': '(max 5 6 7)',
             'expected': 7
         },
+        'min': {
+            'input': '(min 5 6 7)',
+            'expected': 5
+        },
 
-        //FIXME: add more test cases for logic operators here
+        //TODO: add more test cases for logic operators here
         '=': {
             'input': '(= 1 1)',
             'expected': true
@@ -117,8 +118,25 @@ var display_test_cases = {
             'input': '(> 3 1)',
             'expected': true
         },
+        'not': {
+            'input': '(not true)',
+            'expected': false
+        },
+        'and': {
+            'input': '(and true false)',
+            'expected': false
+        },
+        'or': {
+            'input': '(or true false)',
+            'expected': true
+        },
 
         //List test cases
+        'list': {
+            'input': '( begin ( define l ( list 1 2 3)))',
+            'expected': [1,2, 3],
+            'custom_equality': listEquals
+        },
         'car': {
             'input': '( begin (define l (list 1 2 3)) (car l))',
             'expected': 1

@@ -1,6 +1,20 @@
 TODO.txt
 
-* Fix the debug statements?
-* bracket matching in the text input does not work, and its hard to do
+* fix bugs for built in functions
+* more test cases
+* built in functions need to do type checking
+
+* support for macros 
+* support for call/cc
+* support for ' as a shortcut for quote
+
+* Support splitting up functions into modules. Syntax should be like (require 'module_name')
+* more datastructure support (support for dicts)
+* support for string functions?
+
+* editor improvements - highlight closing brackets
+
 * missing values are hard to debug [for example (define (lambda (x) (+ 10 x))) is missing the variable to define. It does not throw a useful error message] 
-* More environment functions
+* More environment functions - more built in functions
+
+* error recovery

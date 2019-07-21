@@ -4,7 +4,6 @@ function depth(env) {
     while (env._parent != undefined) {
         env = env._parent;
         c += 1;
-
     }
     return c;
 }

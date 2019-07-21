@@ -50,12 +50,6 @@ function global_env() {
 
 //Standard environment - all built in functions
 function standard_env() {
-    //TODO: add importing functionality
-    //TODO: split this up into modules
-
-    //TODO: add in stuff to throw errors if the number of args is wrong for some of these functions
-    //TODO: add in some type checking in here
-
     //These are helper methods
     var eq = function(args) {
         if (args.length < 2) {
@@ -131,7 +125,7 @@ function standard_env() {
         },
 
         //Comparison operators
-        '=': function(args) {
+        '=': function(args) { //this does the reference equals equality, not value equals
             return eq(args);
         },
         '>': function(args) {
@@ -242,6 +236,7 @@ function standard_env() {
             }
             return a;
         },
+        //FIXME - I think that reduce-right is broken
         'reduce-right': function(args) {
             var proc = args[0];
             var l = args[1];
@@ -253,6 +248,7 @@ function standard_env() {
         },
 
         //Type checking functions
+        //TODO: test cases for type checking functions
         'number?': function(args) {
             return (typeof(args) === 'number');
         },
