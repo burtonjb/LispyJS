@@ -6,7 +6,7 @@
 
 //Environment classes and functions
 function Environment(environment, parent) {
-    this.env = environment; //this should be an object
+    this.env = environment; //this should be an object (dict)
     this.parent = parent //this is an Environment
 }
 
@@ -247,6 +247,23 @@ function standard_env() {
             return a;
         },
 
+        //Methods to load code from external sources.
+        'load': function(args) {
+            var src = args[0];
+            var request = new XMLHttpRequest();
+            request.open('GET', src, false);  // Synchronous http request. 
+            request.setRequestHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            request.send(null);
+            if (request.status >= 200 && request.status < 300) { //Allowable status codes?
+                return request.responseText;
+            } else {
+                throw "Failed to load resource: " + src;
+            }
+        },
+        'parse': function(args) {
+            return parse(args[0]);
+        },
+
         //Type checking functions
         //TODO: test cases for type checking functions
         'number?': function(args) {
@@ -267,8 +284,8 @@ function standard_env() {
         },
 
         //metaprogramming
-        'eval': function(args) {
-            return s_eval(args[0]);
+        'eval': function(args, environment) {
+            return s_eval(args[0], environment);
         },
 
         //custom functions

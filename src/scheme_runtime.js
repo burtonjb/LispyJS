@@ -67,7 +67,7 @@ function s_eval(expression, environment = global_env()) {
                 continue;
             } else //proc is a function, evaluate it
                 try {
-                   return proc(args);
+                   return proc(args, environment);
                 } catch (e) {
                     console.log(e, expression, evaluations);
                     throw "expression '" + proc + "'' is not a function. Context is: " + all;

@@ -1,4 +1,4 @@
-TODO.txt
+TODO:
 
 * fix bugs for built in functions
 * more test cases
@@ -8,7 +8,7 @@ TODO.txt
 * support for call/cc
 * support for ' as a shortcut for quote
 
-* Support splitting up functions into modules. Syntax should be like (require 'module_name')
+~~Support splitting up functions into modules. Syntax should be like (require 'module_name')~~ (can load from external sources)
 * more datastructure support (support for dicts)
 * support for string functions?
 

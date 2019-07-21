@@ -28,8 +28,9 @@ var display_test_cases = {
         'expected': 314.15000000000003
     },
     'sum-to-recursive': {
-        'input': '( begin ( define sum ( lambda ( n acc) ( if ( equal? 0 n) acc ( sum ( - n 1) ( + n acc))))) ( sum 5 0))',
-        'expected': 15
+        //This test case tests that the tail call optimization works as expected. If it didn't the stack would blow up.
+        'input': '( begin ( define sum ( lambda ( n acc) ( if ( equal? 0 n) acc ( sum ( - n 1) ( + n acc))))) ( sum 5000 0))',
+        'expected': 12502500
     },
     //Function test cases here (Should they be in the trivial test cases?)
     'callback': {
@@ -39,6 +40,10 @@ var display_test_cases = {
     'closure': {
         'input': '( begin ( define c ( lambda ( x) ( lambda ( y) ( + x y)))) (define d (c 5)) (d 2))',
         'expected': 7
+    },
+    'load': {
+        'input': '( begin ( define a ( load ( quote /modules/scheme/util.ls))) ( define b ( parse a)) ( eval b) ( module-test 1 2))',
+        'expected': 3
     }
 };
 
@@ -199,12 +204,12 @@ var display_test_cases = {
         },
 
         //type test cases
-        'list': {
+        'list?': {
             'input': '( begin (define l (list 1 2 3)) (val l))',
             'expected': [1, 2, 3],
             'custom_equality': listEquals
         },
-        'number': {
+        'number?': {
             'input': '( begin ( define x 10) ( val x))',
             'expected': 10
         },
