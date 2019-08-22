@@ -6,6 +6,7 @@ TODO:
 
 * support for macros 
 * support for call/cc
+* support for ; as comment
 * support for ' as a shortcut for quote
 
 ~~Support splitting up functions into modules. Syntax should be like (require 'module_name')~~ (can load from external sources)
