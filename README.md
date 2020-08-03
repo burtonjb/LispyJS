@@ -31,16 +31,18 @@ There is a special form - lambda, which is used to declare a function. The lambd
 1. an environment (the variables in scope for the function)
 
 An example lambda and the usage would be like
-`
+```
 (define f (lambda (x) (+ x 1)))
 (f 3) ; returns 4
 which would bind a function to the name 'f' which adds 1 to the input argument
-`
+```
 
 Lambdas are allowed to be recursive, and with being allowed to define variables makes the language turing complete.
 
 An example of a recusive function would be:
-`(define f ( lambda ( x acc) (if ( = x 0) acc ( f ( - x ) ( + acc x)))))`
+```
+(define f ( lambda ( x acc) (if ( = x 0) acc ( f ( - x ) ( + acc x)))))
+```
 Which sums up all the numbers from 0 to x (and stores them in 'acc', the accumulator).
 
 The interpreter doesn't support iteration, but there is a way to prevent the stack from blowing up. This is covered in the 'tail call optimization' section.
@@ -52,10 +54,12 @@ The interpreter supports some of the simpler high order functions that act on li
 1. reduce (reduce-right and reduce-left)
 
 These methods take in a function and list, and outputs the results.
-`( define l1 ( list 1 2 3)) -> create the list
+```
+( define l1 ( list 1 2 3)) -> create the list
 ( define l2 ( map ( lambda ( x) ( * x 2)) l1))  -> l2 = 2, 4, 6 [doubles all the values]
 ( define l3 ( filter ( lambda ( x) ( < x 5)) l2)) -> l3 = 2, 4 [filters out all values greater than 5]
-( reduce-left ( lambda ( x c) ( + x c)) l1) -> returns 6 [sums up all values in l1]`
+( reduce-left ( lambda ( x c) ( + x c)) l1) -> returns 6 [sums up all values in l1]
+```
 
 In fact, functions are first-class citizens and they can be passed to other functions. You can make a function called 'call-twice' which will just call the passed in function twice (if you wanted, for whatever reason)
 
@@ -63,10 +67,14 @@ In fact, functions are first-class citizens and they can be passed to other func
 javascript supports closures, so closure support is provided out of the box.
 
 You can do something like:
-`(define gen (lambda ( x) ( lambda ( y) ( + x y)))))`
+```
+(define gen (lambda ( x) ( lambda ( y) ( + x y)))))
+```
 When gen is called, it will return a function that adds the arg gen was called with with its own input argument.
 For example:
-`(define add-twelve (gen 12)) `
+```
+(define add-twelve (gen 12)) 
+```
 will create a function that adds 12 to its input argument
 
 #### Tail call optimization
