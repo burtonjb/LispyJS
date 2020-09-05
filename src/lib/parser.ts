@@ -56,6 +56,9 @@ function constructExpressionInternal(tokens: Array<string>): expression {
  * constructExpressionInternal
  */
 function constructExpression(tokens: Array<string>): expression {
+  if (tokens.length == 0) {
+    throw new ParseError("No input supplied");
+  }
   const exp = constructExpressionInternal(tokens);
   if (tokens.length != 0) {
     throw new ParseError(
@@ -79,6 +82,9 @@ function parse(input: string): expression {
  */
 
 function formatExpression(input: expression): string {
+  if (input == null || input == undefined) {
+    return "";
+  }
   if (typeof input == "number" || typeof input == "string") {
     return `${input} `;
   } else {

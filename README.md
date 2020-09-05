@@ -60,6 +60,33 @@ Its made up of a:
 ## Repl
 The repl right now is really simple. It takes in an input string and outputs the corresponding s-expression.
 
+## Very simple evaluator and environment 
+An expression is a command that is evaluated. The slightly complicated part is that the expression must be evaluated in an environment. 
+
+For example: `(+ 1 2)` will pretty obviously return 3, but what about variable lookups like `x` or function calls like `(f args)`
+
+These need to be evaluated in an environment where the values of `x`, `f`, and `args` are defined. An environment is a mapping of names to values. 
+
+### Environment
+In scheme, an environment has two components:
+1. The mapping of names to values
+2. The parent environment
+
+Parts of the evaluation step will look up values in the current environment. If they don't exist, then the parent will be checked. 
+
+There's also a root environment, where native method calls will be defined. 
+
+### Evaluate
+The evaluation of an expression in scheme is matched against a couple patterns.
+1. Check if the expression is a variable reference or a constant
+2. Check if the expression is a fundamental special form
+3. Assume its a function call of the form `(f args)`
+
+As of now, evaluate is really simple.
+
+There are currently no special forms defined, so it only supports variable look ups, constants, and built-in functions. 
+
+One thing to note is that evalExpression is using the javascript call stack. I may want to create my own stack and use that, as I think it will make it easier to support blocks and call/cc.
 
 ## Sources:
 * https://schemers.org/Documents/Standards/R5RS/r5rs.pdf
