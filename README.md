@@ -1,4 +1,4 @@
-# LispyJS
+v# LispyJS
 The project is a scheme interpreter, written in javascript.
 Its based on the R5S5 spec, mostly because that one has/had a nice PDF for the language spec
 
@@ -87,6 +87,27 @@ As of now, evaluate is really simple.
 There are currently no special forms defined, so it only supports variable look ups, constants, and built-in functions. 
 
 One thing to note is that evalExpression is using the javascript call stack. I may want to create my own stack and use that, as I think it will make it easier to support blocks and call/cc.
+
+
+### Evaluate - special forms
+The next step is to support some of the simpler special forms. 
+The simplest forms that don't require any large modifications are `define`, `quote`, `if`, `set!`
+
+| form | syntax| semantics| example | 
+|--|--|--|--|
+| define |  (define variable expression )| defines a variable and sets the variable's value to the evaluated expression *in the current environment* | (define x 28) => sets x to 28 in the current scope. Will error if x is already bound |
+| set! | (set! symbol expression) | sets the value of symbol to the value of the evaluated expression *in the environment that it is defined* | (set! x 1) => sets x to 1 in the scope that x was bound. Errors if x was not already bound |
+| quote | (quote expression ) | returns the expression, doesn't evaluate it | (quote a b c) => (a b c) |
+| if | (if test true-exp false-exp) |  evaluate test. If true evaluate and return true-exp, otherwise evaluate and return false-exp | (if (= a b) (+ a b) (- a b) ) |
+
+Note that the results of `define` and `set` are unspecified. In my implementation, they will return the value of the variable so you can do stuff like `(define x (define y 100))` to set both x and y to 100.
+
+At this point `set!` and `define` are partially implemented, but they will need to change when the `lambda` special form is created.
+
+I've also set up two types of special form functions - raw functions (in special.js) which contain the implementation of the function, and checked functions, which will throw errors if some of the preconditions are violated. I found the checked ones hard to read, but easier to use (the program will fail with an error instead of doing something random). 
+
+remaining forms are: `lambda`, `if`, `set!` and they require much more work
+
 
 ## Sources:
 * https://schemers.org/Documents/Standards/R5RS/r5rs.pdf

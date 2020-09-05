@@ -2,9 +2,10 @@
 
 function createReplEnv() {
   return {
-    car: (args) => args[0],
-    cdr: (args) => args.slice(1),
+    "car": (args) => args[0],
+    "cdr": (args) => args.slice(1),
     "+": (args) => args.reduce((acc, cur) => acc + cur),
+    "=": (args) => args.every( (val, i, arr) => val === arr[0])
   };
 }
 
