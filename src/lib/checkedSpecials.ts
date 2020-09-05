@@ -1,8 +1,8 @@
 import { list, environment, expression } from "./types";
 import { isString } from "util";
-import { evalExpression } from "./runtime";
 
 import * as raw from "./specials";
+import { Lambda } from "./lambda";
 
 export class RuntimeError extends Error {
   constructor(message: string) {
@@ -34,6 +34,11 @@ export class IfError extends RuntimeError {
   }
 }
 
+export class LambdaError extends RuntimeError {
+  constructor(message: string) {
+    super(message);
+  }
+}
 export function define(exp: list, env: environment): expression {
   if (exp.length != 3) {
     throw new DefineError(
@@ -46,9 +51,9 @@ export function define(exp: list, env: environment): expression {
       `Unable to bind variable to non-symbolic value. Expression was: ${exp}`
     );
   }
-  if (env[symbol as string] != undefined) {
+  if (env.map[symbol as string] != undefined) {
     throw new DefineError(
-      `Unable to bind variable. Variable already defined. Expression was: ${exp}`
+      `Unable to bind variable. Variable [(${symbol})] already defined. Expression was: ${exp}`
     );
   }
   return raw.define(exp, env);
@@ -66,7 +71,7 @@ export function set(exp: list, env: environment): expression {
       `Unable to set! variable to non-symbolic value. Expression was: ${exp}`
     );
   }
-  if (env[symbol as string] == undefined) {
+  if (env.find(symbol as string) == undefined) {
     throw new SetError(
       `Unable to set variable. Variable not already defined. Expression was: ${exp}`
     );
@@ -90,4 +95,13 @@ export function evalIf(exp: list, env: environment): expression {
     );
   }
   return raw.evalIf(exp, env);
+}
+
+export function createLambda(exp: list, env: environment): Lambda {
+  if (exp.length != 3) {
+    throw new LambdaError(
+      `Incorrect number of arguments to lambda. It takes 3. Expression was ${exp}`
+    );
+  }
+  return raw.createLambda(exp, env);
 }

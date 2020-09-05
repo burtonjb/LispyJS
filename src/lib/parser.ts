@@ -22,8 +22,8 @@ function atomize(token: string): atom {
  * e.g. if the input is "(define x 2)" the output would be: ["(", "define", "x", "2", ")"]
  */
 function tokenize(input: string): Array<string> {
-  const removeDuplicateWhitespace = input.replace(/\s+/g, " ");
-  const addSpacesOnBrackets = removeDuplicateWhitespace
+  const fixWhitespace = input.replace(/\n/g, " ").replace(/\s+/g, " ");
+  const addSpacesOnBrackets = fixWhitespace
     .replace(/\(/gi, " ( ")
     .replace(/\)/gi, " ) ");
   return addSpacesOnBrackets.split(" ").filter((c) => c.length > 0);

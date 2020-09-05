@@ -12,7 +12,7 @@
     "lint-fix": "eslint . --ext .ts --fix",
     "prettier": "npx prettier --write 'src/**/*.ts' 'tst/**/*.ts'",
     "format": "run-s prettier",
-    "test": "mocha -r ts-node/register tst/**/*.spec.ts",
+    "test": "mocha -r ts-node/register 'tst/{**/*.spec.ts, *.spec.ts}'",
     "super-clean": "rm -r dist node_modules",
     "inc": "run-s build prettier lint-fix test",
     "release": "run-s clean inc",

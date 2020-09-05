@@ -1,12 +1,12 @@
 import { expression, environment, list } from "./types";
 import { isString } from "./helpers";
 import { isArray } from "util";
-import { define, set, quote, evalIf } from "./checkedSpecials";
+import { define, set, quote, evalIf, createLambda } from "./checkedSpecials";
 
 /*
  * This function evaluates an expression in an environment
  */
-function evalExpression(exp: expression, env: environment): expression {
+function evalExpression(exp: expression, env: environment): any {
   // handle null/undefined case
   if (exp == null || exp == undefined) {
     return exp;
@@ -14,7 +14,11 @@ function evalExpression(exp: expression, env: environment): expression {
 
   // Variable reference
   if (isString(exp)) {
-    return env[exp as string];
+    if (env.find(exp as string) == undefined) {
+      console.error(exp);
+      return undefined; // Should throw on unbound symbol?
+    }
+    return env.find(exp as string).map[exp as string];
   }
   // constant
   else if (!isArray(exp)) {
@@ -34,13 +38,23 @@ function evalExpression(exp: expression, env: environment): expression {
     return quote(exp as list, env);
   } else if (car == "if") {
     return evalIf(exp as list, env);
+  } else if (car == "lambda") {
+    return createLambda(exp as list, env);
+  }
+
+  //debug commands
+  else if (car == ".env") {
+    return env;
   }
 
   // function call
   else {
     const func = evalExpression(car, env) as any; //The first element could be an expression so evaluate that expression
     const args = cdr.map((a) => evalExpression(a, env)); //each arg could also be an expression so evaluate each arg
-    return func(args);
+    if (!func || !func.call) {
+      console.error(exp);
+    }
+    return func.call(args);
   }
 }
 

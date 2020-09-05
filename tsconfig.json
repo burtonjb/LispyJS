@@ -24,7 +24,7 @@
     }
   },
   "include": [
-    "src/**/*.ts", "src/lib/environment.js"
+    "src/**/*.ts", "src/lib/environment.js", "src/lib/env/*"
   ],
   "exclude": [
     "node_modules",

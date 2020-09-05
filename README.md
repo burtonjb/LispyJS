@@ -1,4 +1,4 @@
-v# LispyJS
+# LispyJS
 The project is a scheme interpreter, written in javascript.
 Its based on the R5S5 spec, mostly because that one has/had a nice PDF for the language spec
 
@@ -97,7 +97,7 @@ The simplest forms that don't require any large modifications are `define`, `quo
 |--|--|--|--|
 | define |  (define variable expression )| defines a variable and sets the variable's value to the evaluated expression *in the current environment* | (define x 28) => sets x to 28 in the current scope. Will error if x is already bound |
 | set! | (set! symbol expression) | sets the value of symbol to the value of the evaluated expression *in the environment that it is defined* | (set! x 1) => sets x to 1 in the scope that x was bound. Errors if x was not already bound |
-| quote | (quote expression ) | returns the expression, doesn't evaluate it | (quote a b c) => (a b c) |
+| quote | (quote expression ) | returns the expression, doesn't evaluate it | (quote (a b c)) => (a b c) |
 | if | (if test true-exp false-exp) |  evaluate test. If true evaluate and return true-exp, otherwise evaluate and return false-exp | (if (= a b) (+ a b) (- a b) ) |
 
 Note that the results of `define` and `set` are unspecified. In my implementation, they will return the value of the variable so you can do stuff like `(define x (define y 100))` to set both x and y to 100.
@@ -106,8 +106,51 @@ At this point `set!` and `define` are partially implemented, but they will need 
 
 I've also set up two types of special form functions - raw functions (in special.js) which contain the implementation of the function, and checked functions, which will throw errors if some of the preconditions are violated. I found the checked ones hard to read, but easier to use (the program will fail with an error instead of doing something random). 
 
-remaining forms are: `lambda`, `if`, `set!` and they require much more work
+remaining forms are: `lambda`, `define-syntax`, `let-syntax`, `letrec-syntax`, `syntax-rules` and they require much more work.
 
+### Evaluate - special forms - lambda 
+| form | syntax| semantics| example | 
+|--|--|--|--|
+| lambda |  (lambda args body )| creates a lambda function, with arguments *args* and function body *body*  | (lambda (x) (+ x x)) => creates a function that returns the input added to itself. |
+
+A couple things need to change to support this change.
+
+Starting off, there needs to be a 'Lambda' class. This class will have 3 properties:
+1. List of parameter names
+2. function body
+3. the parent environment. This needs to be saved when the lambda is created for the language to be lexically scoped. If instead this was passed in when the lambda was classed it would be dynamically scoped (pretty cool how this small change can change a large property of the language :) )
+
+The lambda will have one method - call. It will create a new child environment, bind the input args to the parameter names and then evaluate the body of the lambda in the new env. 
+
+The input args can have one of the following forms:
+1. the proc takes in a fixed number of args
+2. the proc takes in any number of args and the sequence is converted into a list
+3. the proc takes in n mandatory args and then a tail that is converted into a list
+
+I'm only implementing the first case for now.
+
+The second thing that needs to change is the Environment. It now has to has to actually have its own scope and also the parent scope. There is then a find function which will return the Environment in which the key is defined (or undef if there is no definition)
+
+This environment change means that `set!` will need to be updated and more tests will need to be added for `define`.
+
+In addition, the variable reference semi-special form will need to be updated to search through the environments to find the one where the value is defined. 
+
+### Checkin - what can you do with lispy with the current implementation
+The language should now be turin complete! It supports assignment, branching and iteration through recursion.
+
+You can check the test cases in `appl.spec.ts` or `sicp.spec.ts` to see what the language can support. Some examples are:
+* defining variables
+* creating functions
+* defining *recursive* functions
+* can pass functions as data and return functions as data (and supports functional closures)
+* chapter 1.1 examples of **The Structure and Interpretation of Computer Programs (SICP)**
+
+That's pretty good!
+
+Limitations:
+* its still missing some of the fundamental standard forms: `define-syntax`, `let-syntax`, `letrec-syntax`, `syntax-rules`
+* it doesn't support tail call elimination, so recursion right now is limited
+* (Almost) no error reporting or recovery. There's probably some error messages lying around that I haven't cleaned up, but it should be better thought out
 
 ## Sources:
 * https://schemers.org/Documents/Standards/R5RS/r5rs.pdf
