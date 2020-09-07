@@ -224,6 +224,18 @@ Instead of recursively calling `evalExpression` the following changes are requir
 
 I added a simple test case to verify that tail call optimization works for at least really simple tail calls. 
 
+### Parsing, fileIO (just I) and eval. 
+
+This change adds some wrappers around already defined methods and some file utilities.
+
+functions:
+* parse: str => s-expression. Converts the input string into a parsed s-expression
+* slurp: file path => string. Reads in the contents of the file in the path into a string.
+
+| form | syntax| semantics| example | 
+|--|--|--|--|
+| eval |  (eval expression [initial-env])| evaluates the expression in the initial user environment | (eval (quote (x))) => evaluates x as if it was an input command|
+
 
 ## Sources:
 * https://schemers.org/Documents/Standards/R5RS/r5rs.pdf

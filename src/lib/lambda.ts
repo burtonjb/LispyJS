@@ -1,5 +1,4 @@
 import { environment, expression, list } from "./types";
-import { evalExpression } from "./runtime";
 import { Environment } from "./environment";
 import { RuntimeError } from "./checkedSpecials";
 

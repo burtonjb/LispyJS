@@ -114,4 +114,15 @@ describe("application tests", () => {
     const result = evalExpression(parse(exp), env);
     expect(0).to.be.equal(result);
   });
+  it("can read a file", () => {
+    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const exp = `
+    (begin
+      (define file-contents (read-file (quote ./scheme/basic.scm)))
+      (eval (parse file-contents))
+    )
+    `;
+    const result = evalExpression(parse(exp), env);
+    expect(6).to.be.equal(result);
+  });
 });

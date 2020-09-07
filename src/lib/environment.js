@@ -1,6 +1,8 @@
 // Call this a JS function for now. The raw functions here should eventually be replaced with a 'native' lambda type
 
 import { NativeLambda } from "./lambda";
+import { parse } from "./parser";
+import {readFileSync} from "fs";
 
 class Environment {
   constructor(map, parent) {
@@ -18,6 +20,13 @@ class Environment {
     }
     return this;
   }
+
+  getRoot() {
+    while (this.parent) {
+      this.parent.getRoot();
+    }
+    return this;
+  }
 }
 
 /*
@@ -30,7 +39,9 @@ function createBaseEnv() {
     "begin": (args) => args[args.length - 1],
     "+": (args) => args.reduce((acc, cur) => acc + cur),
     "-": (args) => args.reduce((acc, cur) => acc - cur),
-    "=": (args) => args.every( (val, i, arr) => val === arr[0])
+    "=": (args) => args.every( (val, i, arr) => val === arr[0]),
+    "parse": (args) => parse(args[0]),
+    "read-file": (args) =>  readFileSync(args[0], 'utf8')
   };
   for (const [key, value] of Object.entries(builtIns)) {
     builtIns[key] = new NativeLambda(value);

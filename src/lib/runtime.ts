@@ -2,7 +2,7 @@ import { expression, environment, list } from "./types";
 import { isString } from "./helpers";
 import { isArray } from "util";
 import { define, set, quote, evalIf, createLambda } from "./checkedSpecials";
-import { NativeLambda } from "./lambda";
+import { NativeLambda, Lambda } from "./lambda";
 
 /*
  * This function evaluates an expression in an environment
@@ -30,6 +30,7 @@ function evalExpression(exp: expression, env: environment): any {
       return early if EXP was an atom. It got to here, but TS's type checking is breaking down now*/
 
     const car = exp[0];
+    const cdr = exp.slice(1);
 
     if (car == "define") {
       return define(exp as list, env);
@@ -42,6 +43,8 @@ function evalExpression(exp: expression, env: environment): any {
       continue;
     } else if (car == "lambda") {
       return createLambda(exp as list, env);
+    } else if (car == "eval") {
+      return evalExpression(evalExpression(cdr[0], env), env.getRoot());
     }
 
     //debug commands
@@ -59,11 +62,14 @@ function evalExpression(exp: expression, env: environment): any {
       if (car instanceof NativeLambda) {
         //built-in function call, call it
         return car.call(cdr);
-      } else {
+      } else if (car instanceof Lambda) {
         // custom lambda, replace current expression and env
         exp = car.body;
         env = car.createLambdaEnv(cdr);
         continue;
+      } else {
+        //What to do if it isn't one of these types?
+        throw new Error("Preventing an infinite loop right now.");
       }
     }
   }
