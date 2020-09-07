@@ -19,7 +19,7 @@ export class Lambda implements Proc {
     readonly body: expression,
     readonly parentEnv: environment
   ) {}
-  call(args: list): expression {
+  createLambdaEnv(args: list): Environment {
     const env = new Environment({}, this.parentEnv);
     if (args.length != this.paramNames.length) {
       throw new LambdaError(
@@ -29,7 +29,13 @@ export class Lambda implements Proc {
     for (let i = 0; i < args.length; i++) {
       env.map[this.paramNames[i] as string] = args[i];
     }
-    return evalExpression(this.body as expression, env);
+    return env;
+  }
+
+  call(args: list): expression {
+    throw new Error(
+      "This method shouldn't be called now that there is tail call optimization"
+    );
   }
 }
 

@@ -1,6 +1,6 @@
 # LispyJS
 The project is a scheme interpreter, written in javascript.
-Its based on the R5S5 spec, mostly because that one has/had a nice PDF for the language spec
+Its based on the R5RS spec, mostly because that one has/had a nice PDF for the language spec
 
 Its hosted as a static website that you can find here: https://burtonjb.github.io/LispyJS/
 
@@ -14,7 +14,7 @@ It has very simple syntax based on s-expressions which are just paranthesized li
 
 The language is a simple language and pretty easy to implement. This is great for me, as I'll be implementing it.
 
-In the somewhat outdated R5S5 spec, 14 of the 23 s-expression syntatic constructs can be defined in terms of the fundamental constructs
+In the somewhat outdated R5RS spec, 14 of the 23 s-expression syntatic constructs can be defined in terms of the fundamental constructs
 
 fundamental: `define`, `lambda`, `quote`, `if`, `define-syntax`, `let-syntax`, `letrec-syntax`, `syntax-rules`, `set!`
 
@@ -151,6 +151,79 @@ Limitations:
 * its still missing some of the fundamental standard forms: `define-syntax`, `let-syntax`, `letrec-syntax`, `syntax-rules`
 * it doesn't support tail call elimination, so recursion right now is limited
 * (Almost) no error reporting or recovery. There's probably some error messages lying around that I haven't cleaned up, but it should be better thought out
+
+### Tail call optimization
+A tail call is a function call that is performed as the final action of a function. 
+
+Tail calls can be implmeneted without adding a new stack frame to the call stack. Instead the frame of the current procedure is replaced with the frame of the tail call, modified as needed. 
+
+The scheme language spec requires tail call optimization to be implemented and its the only way to do infinite loops with recursion (if it wasn't implemented the stack would blow up eventually)
+
+Consider the two following implmentations of a function to calculate a factorial (examples are from wikipedia):
+
+The below function is not tail recursive:
+```
+(define (factorial n)
+ (if (= n 1)
+    1
+    (* n (factorial (- n 1)))))
+```
+
+The stack would look like:
+```
+  call factorial (4)
+   call fact-iter (1 4)
+    call fact-iter (4 3)
+     call fact-iter (12 2)
+      call fact-iter (24 1)
+      return 24
+     return 24
+    return 24
+   return 24
+  return 24
+``` 
+when called. 
+
+Rewritten to be tail recursive:
+```
+(define (factorial n)
+  (fact-iter 1 n))
+(define (fact-iter product n)
+  (if (< n 2)
+      product
+      (fact-iter (* product n)
+                 (- n 1))))
+```
+
+```
+  call factorial (4)
+   call fact-iter (1 4)
+   replace arguments with (4 3)
+   replace arguments with (12 2)
+   replace arguments with (24 1)
+   return 24
+  return 24
+```
+
+Instead of recursively calling `evalExpression` the following changes are required:
+* evalExpression should loop.
+* instead of `if` calling eval on the true/false condition, the current expression is set to the unevaluated value of the branch chosen
+* (optional, which I've opted not to do) convert `begin` to a special form which takes the rest of the expression, calls evalExpression on the rest and then returns the last result. 
+* Procedures:
+        
+        The procedure evaluation is currently:
+        1. Evaluate 'car' in the current expression. Assume its a function call.
+        2. evaluate each of the 'cdr' in the current expression. They are function arguments [this weirdness is for cases like `((f-maker) (arg-maker 1) (arg-maker 2))`
+
+        Something similar is still done, but its more complicated.
+        
+        1. Evaluate each of the expressions and store them
+        2. again, assume the car is the function, and the cdr are args
+        3. switch on the type of car - if its a builtIn function call it.
+            Otherwise its a custom lambda. Replace the current expression with the body of the lambda and the current environment with a new environment with the parent of the envionrment being the lambda environment and the arg bindings being the evaluated args from (new)step 2. Then go back to the beginning of eval.
+
+I added a simple test case to verify that tail call optimization works for at least really simple tail calls. 
+
 
 ## Sources:
 * https://schemers.org/Documents/Standards/R5RS/r5rs.pdf

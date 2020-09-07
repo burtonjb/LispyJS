@@ -73,10 +73,10 @@ describe("if", () => {
     const actual = evalIf(exp as list, env);
     expect(2).to.equal(actual);
   });
-  it("should evaluate the expression before returning", () => {
+  it("should return the expression and not evaluate", () => {
     const env = createBaseEnv();
     const exp = parse("(if (= 1 1) (+ 1 0) (+ 2 0))");
     const actual = evalIf(exp as list, env);
-    expect(1).to.equal(actual);
+    expect(["+", 1, 0]).to.eql(actual);
   });
 });

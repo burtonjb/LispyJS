@@ -31,9 +31,9 @@ export function evalIf(exp: list, env: environment): expression {
   const trueExpression = exp[2];
   const falseExpression = exp[3];
   if (evalExpression(test, env)) {
-    return evalExpression(trueExpression, env);
+    return trueExpression;
   } else {
-    return evalExpression(falseExpression, env);
+    return falseExpression;
   }
 }
 

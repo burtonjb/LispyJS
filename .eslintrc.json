@@ -26,6 +26,7 @@
         "@typescript-eslint/semi": [
             2,
             "always"
-        ] /* Not sure if 'always' is recommended for TS. Seems opinions are divided on this */
+        ], /* Not sure if 'always' is recommended for TS. Seems opinions are divided on this */
+        "no-constant-condition": [1, {"checkLoops": false}]
     }
 }

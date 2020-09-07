@@ -101,4 +101,17 @@ describe("application tests", () => {
     const result = evalExpression(parse(exp), env);
     expect([1, 2, 3, 4, 1, 2]).to.be.eql(result);
   });
+
+  it("the stack should not blow up if its a tail recursive function -- simple test case", () => {
+    //The stack will explode if tail call optimization is not implemented
+    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const exp = `
+    (begin
+    (define iter (lambda (x) (if (= 0 x) x (iter (- x 1)))))
+    (iter 100000)  
+    )
+    `;
+    const result = evalExpression(parse(exp), env);
+    expect(0).to.be.equal(result);
+  });
 });
