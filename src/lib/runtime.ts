@@ -17,7 +17,6 @@ function evalExpression(exp: expression, env: environment): any {
     // Variable reference
     if (isString(exp)) {
       if (env.find(exp as string) == undefined) {
-        console.error(exp);
         return undefined; // Should throw on unbound symbol?
       }
       return env.find(exp as string).map[exp as string];
@@ -44,6 +43,8 @@ function evalExpression(exp: expression, env: environment): any {
     } else if (car == "lambda") {
       return createLambda(exp as list, env);
     } else if (car == "eval") {
+      // This functionality was reversed engineered from biwascheme
+      if (exp.length != 2) throw new Error(`Wrong number of args to eval (takes 1). Expression was ${exp}`);
       return evalExpression(evalExpression(cdr[0], env), env.getRoot());
     }
 
@@ -59,6 +60,7 @@ function evalExpression(exp: expression, env: environment): any {
       );
       const car = evaluated[0];
       const cdr = evaluated.slice(1);
+      // TODO: change this to if lambda -> lambda stuff, else -> call NativeLambda. Don't do what I have.
       if (car instanceof NativeLambda) {
         //built-in function call, call it
         return car.call(cdr);
@@ -68,8 +70,7 @@ function evalExpression(exp: expression, env: environment): any {
         env = car.createLambdaEnv(cdr);
         continue;
       } else {
-        //What to do if it isn't one of these types?
-        throw new Error("Preventing an infinite loop right now.");
+        throw new Error(`Error: ${exp} is not callable`);
       }
     }
   }

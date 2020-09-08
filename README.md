@@ -226,7 +226,7 @@ I added a simple test case to verify that tail call optimization works for at le
 
 ### Parsing, fileIO (just I) and eval. 
 
-This change adds some wrappers around already defined methods and some file utilities.
+This change adds some wrappers around already defined methods and some file utilities. And the `eval` special form, which is far less fun when you worked hard to make the interpreter in the first place
 
 functions:
 * parse: str => s-expression. Converts the input string into a parsed s-expression
@@ -236,8 +236,41 @@ functions:
 |--|--|--|--|
 | eval |  (eval expression [initial-env])| evaluates the expression in the initial user environment | (eval (quote (x))) => evaluates x as if it was an input command|
 
+### Defining macros (define syntax)
+
+Scheme programs can define and use new derived expression, called *macros*. 
+
+An example macro is below. Its `let` which is one of the derived special forms.
+```
+; API definition
+(let ((x 1)
+      (y 2))
+      (+ x y)
+      )
+; Let take in a list of pairs - name=>value. These pairs make variables inside the let statement and can only be used in there, which is useful for namespacing. 
+
+; macro definition
+(define-syntax let
+  (syntax-rules ()
+    ((let ((var val) ...) body ...)
+      ((lambda (var ...) body ...) val ...))))
+```
+
+A macro consists of two parts:
+
+1. A set of expressions used to establish that certain identifiers are macro keywords, associate them with macro transformers, and control the scope within  which a macro is defined
+2. • a pattern language for specifying macro transformers.
+
+
+| form | syntax| semantics| example | 
+|--|--|--|--|
+| define-syntax | (define-syntax keyword (transformer spec))| keyword is the identifier for the new macro and  | (eval (quote (x))) => evaluates x as if it was an input command|
+
+
 
 ## Sources:
 * https://schemers.org/Documents/Standards/R5RS/r5rs.pdf
 * http://norvig.com/lispy.html
 * https://geoffreylitt.com/2018/01/15/adding-tail-calls-optimization-to-a-lisp-interpreter.html
+* https://blog.veitheller.de/Scheme_Macros_III:_Defining_let.html
+

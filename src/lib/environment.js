@@ -22,8 +22,8 @@ class Environment {
   }
 
   getRoot() {
-    while (this.parent) {
-      this.parent.getRoot();
+    if (this.parent) {
+      return this.parent.getRoot();
     }
     return this;
   }
