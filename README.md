@@ -238,7 +238,10 @@ functions:
 
 ### Defining macros (define syntax)
 
-Scheme programs can define and use new derived expression, called *macros*. 
+Scheme programs can define and use new derived expression, called *macros*.
+
+A macro is a transformation performed on code by code. That is, a piece of code, read by the interpreter (or compiler),
+ which takes in code as an argument, manipulates and the returns the result, which is then run in-place.
 
 An example macro is below. Its `let` which is one of the derived special forms.
 ```

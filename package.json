@@ -15,7 +15,8 @@
     "test": "mocha -r ts-node/register 'tst/{**/*.spec.ts, *.spec.ts}'",
     "super-clean": "rm -r dist node_modules",
     "inc": "run-s build prettier lint-fix test",
-    "release": "run-s clean inc",
+    "cp-resources": "cp -r public dist/", 
+    "release": "run-s clean inc cp-resources",
     "repl": "npx ts-node src/repl.ts"
   },
   "author": "Jeffrey Burton",

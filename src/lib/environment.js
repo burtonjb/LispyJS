@@ -34,17 +34,31 @@ class Environment {
  */ 
 function createBaseEnv() {
   const builtIns = {
-    "car": (args) => args[0],
-    "cdr": (args) => args.slice(1),
-    "begin": (args) => args[args.length - 1],
+    "car": (args) => args[0][0],
+    "cdr": (args) => args[0].slice(1),
+    "cons": (args) => {
+      const out = args.slice(1)
+      out.unshift(args[0])
+      return out;
+    },
+    "list": (args) => args,
+    "nil": [],
+
     "+": (args) => args.reduce((acc, cur) => acc + cur),
     "-": (args) => args.reduce((acc, cur) => acc - cur),
     "=": (args) => args.every( (val, i, arr) => val === arr[0]),
+    
     "parse": (args) => parse(args[0]),
-    "read-file": (args) =>  readFileSync(args[0], 'utf8')
+    "read-file": (args) =>  readFileSync(args[0], 'utf8'),
+    "print": (args) => {console.log(args); return args;},
+
+    "#t": true,
+    "#f": false
   };
   for (const [key, value] of Object.entries(builtIns)) {
-    builtIns[key] = new NativeLambda(value);
+    if (typeof value == 'function') {
+      builtIns[key] = new NativeLambda(value);
+    }
   };
   return new Environment(builtIns, null);
 }

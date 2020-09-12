@@ -42,9 +42,19 @@ function evalExpression(exp: expression, env: environment): any {
       continue;
     } else if (car == "lambda") {
       return createLambda(exp as list, env);
+    } else if (car == "begin") {
+      const evaluated = (exp as any)
+        .slice(1, exp.length - 1)
+        .map((e: expression) => evalExpression(e, env));
+      exp = exp[exp.length - 1];
+      continue;
     } else if (car == "eval") {
       // This functionality was reversed engineered from biwascheme
-      if (exp.length != 2) throw new Error(`Wrong number of args to eval (takes 1). Expression was ${exp}`);
+      if (exp.length != 2) {
+        throw new Error(
+          `Wrong number of args to eval (takes 1). Expression was ${exp}`
+        );
+      }
       return evalExpression(evalExpression(cdr[0], env), env.getRoot());
     }
 

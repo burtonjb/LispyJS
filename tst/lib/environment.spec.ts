@@ -21,4 +21,10 @@ describe("Environment", () => {
     expect(child.find("a")).to.equal(parent);
   });
   it("should create the repl env");
+  it("should be able to get the root env for both the parent and the child", () => {
+    const parent = new Environment({ a: 1 }, null);
+    const child = new Environment({ b: 1 }, parent);
+    expect(child.getRoot()).to.equal(parent);
+    expect(parent.getRoot()).to.equal(parent);
+  });
 });

@@ -5,5 +5,7 @@ export const logicBuiltIns = {
     
     //FIXME: these are not implemented correctly. It should be defined as per http://people.csail.mit.edu/jaffer/r5rs_8.html.
     "<=": (args) => args.every( (val, i, arr) => val >= arr[0]), 
-    ">=": (args) => args.every( (val, i, arr) => val <= arr[0]), 
+    ">=": (args) => args.every( (val, i, arr) => val <= arr[0]),
+    "<": (args) => args[0] < args[1], 
+    ">": (args) => args[0] > args[1], 
 }

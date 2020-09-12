@@ -79,7 +79,7 @@ describe("application tests", () => {
     const exp = `
     (begin 
       (define fib (lambda (n) (if (<= n 1) 1 (+ (fib (- n 1)) (fib (- n 2))))))
-      (cdr 0 (fib 0) (fib 1) (fib 2) (fib 3) (fib 4) (fib 5) (fib 6) (fib 7) (fib 8) (fib 9) (fib 10) (fib 11) )
+      (list (fib 0) (fib 1) (fib 2) (fib 3) (fib 4) (fib 5) (fib 6) (fib 7) (fib 8) (fib 9) (fib 10) (fib 11) )
     )
     `;
     const result = evalExpression(parse(exp), env);
@@ -95,11 +95,11 @@ describe("application tests", () => {
       )))
       (define x1 (iter 0))
       (define x2 (iter 0))
-      (cdr 0 (x1) (x1) (x1) (x1) (x2) (x2))
+      (list (x1) (x1) (x1) (x1) (x2) (x2))
     )
     `;
     const result = evalExpression(parse(exp), env);
-    expect([1, 2, 3, 4, 1, 2]).to.be.eql(result);
+    expect([1, 2, 3, 4, 1, 2]).to.be.eql(result); // Is this behavior correct? I think the scheme spec says that the order of evaluations is undefined
   });
 
   it("the stack should not blow up if its a tail recursive function -- simple test case", () => {
