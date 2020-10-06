@@ -2,11 +2,11 @@
 
 import { NativeLambda } from "./lambda";
 import { parse } from "./parser";
-import {readFileSync} from "fs";
+import { readFileSync } from "fs";
 
 class Environment {
   constructor(map, parent) {
-    this.map = map
+    this.map = map;
     this.parent = parent;
   }
 
@@ -30,51 +30,60 @@ class Environment {
 }
 
 /*
- * Create a very basic default environment. 
- */ 
+ * Create a very basic default environment.
+ */
+
 function createBaseEnv() {
   const builtIns = {
-    "car": (args) => args[0][0],
-    "cdr": (args) => args[0].slice(1),
-    "cons": (args) => {
-      const out = args.slice(1)
-      out.unshift(args[0])
-      return out;
-    },
-    "list": (args) => args,
-    "nil": [],
+    list: (args) => args,
+    nil: [],
 
     "+": (args) => args.reduce((acc, cur) => acc + cur),
     "-": (args) => args.reduce((acc, cur) => acc - cur),
-    "=": (args) => args.every( (val, i, arr) => val === arr[0]),
-    
-    "parse": (args) => parse(args[0]),
-    "read-file": (args) =>  readFileSync(args[0], 'utf8'),
-    "print": (args) => {console.log(args); return args;},
+    "=": (args) => args.every((val, i, arr) => val === arr[0]),
+
+    parse: (args) => parse(args[0]),
+    "read-file": (args) => readFileSync(args[0], "utf8"),
+
+    print: (args) => {
+      console.log(args[0]);
+      return args[0];
+    },
+    printv: (args) => {
+      console.log(args);
+      return args;
+    },
+    printflat: (args) => {
+      console.log(`${args}`);
+      return args[0];
+    },
 
     "#t": true,
-    "#f": false
+    "#f": false,
   };
   for (const [key, value] of Object.entries(builtIns)) {
-    if (typeof value == 'function') {
+    if (typeof value == "function") {
       builtIns[key] = new NativeLambda(value);
     }
-  };
+  }
   return new Environment(builtIns, null);
 }
 
 function createReplEnv(...modules) {
   const builtIns = createBaseEnv().map;
 
-  modules.forEach(m => {
+  modules.forEach((m) => {
     for (const [key, value] of Object.entries(m)) {
       if (builtIns[key] == undefined) {
-        builtIns[key] = new NativeLambda(value);
+        if (typeof value == "function") {
+          // Do not wrap constants in lambdas.
+          builtIns[key] = new NativeLambda(value);
+        }
       } else {
         console.error(`field ${key} is already defined. Skipping`);
       }
-    };
-  })
+    }
+  });
 
   return new Environment(builtIns, null);
 }

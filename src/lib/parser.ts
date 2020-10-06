@@ -63,7 +63,7 @@ function constructExpression(tokens: Array<string>): expression {
   const exp = constructExpressionInternal(tokens);
   if (tokens.length != 0) {
     throw new ParseError(
-      `Too many closing parentheses. Remaining tokens were: ${tokens}`
+      `Remaining tokens after closing parens were: ${tokens}`
     );
   }
   return exp;

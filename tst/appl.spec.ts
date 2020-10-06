@@ -2,14 +2,19 @@ import { expect } from "chai";
 import "mocha";
 
 import { parse } from "../src/lib/parser";
-import { createReplEnv } from "../src/lib/environment";
+import { createReplEnv, Environment } from "../src/lib/environment";
 import { logicBuiltIns } from "../src/lib/env/logic_env";
 import { mathBuiltIns } from "../src/lib/env/math_env";
+import { betaEnvBuiltIns } from "../src/lib/env/beta_env";
 import { evalExpression } from "../src/lib/runtime";
+
+function createTestEnv(): Environment {
+  return createReplEnv(logicBuiltIns, mathBuiltIns, betaEnvBuiltIns);
+}
 
 describe("application tests", () => {
   it("calculates the area of a circle", () => {
-    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const env = createTestEnv();
     const exp = `
     (begin 
       (define r 10)
@@ -22,7 +27,7 @@ describe("application tests", () => {
   });
 
   it("creates a function to calculate the area of a circle", () => {
-    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const env = createTestEnv();
     const exp = `
     (begin 
       (define pi 3.1415)
@@ -35,7 +40,7 @@ describe("application tests", () => {
   });
 
   it("creates a function to calculate the factorial of a number, recursively", () => {
-    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const env = createTestEnv();
     const exp = `
     (begin 
       (define fact (lambda (n) (if (<= n 1) 1 (* n (fact (- n 1))))))
@@ -48,7 +53,7 @@ describe("application tests", () => {
 
   it("can create aliases for built in functions", () => {
     return; // Skip this, its broken right now
-    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const env = createTestEnv();
     const exp = `
     (begin 
       (define first car)
@@ -62,7 +67,7 @@ describe("application tests", () => {
   });
 
   it("can pass functions as inputs and return closures", () => {
-    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const env = createTestEnv();
     const exp = `
     (begin 
       (define twice (lambda (x) (* 2 x)))
@@ -75,7 +80,7 @@ describe("application tests", () => {
   });
 
   it("can calculate the fib numbers", () => {
-    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const env = createTestEnv();
     const exp = `
     (begin 
       (define fib (lambda (n) (if (<= n 1) 1 (+ (fib (- n 1)) (fib (- n 2))))))
@@ -87,7 +92,7 @@ describe("application tests", () => {
   });
 
   it("should be able to make an iterator", () => {
-    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const env = createTestEnv();
     const exp = `
     (begin 
       (define iter (lambda (x) (
@@ -104,7 +109,7 @@ describe("application tests", () => {
 
   it("the stack should not blow up if its a tail recursive function -- simple test case", () => {
     //The stack will explode if tail call optimization is not implemented
-    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const env = createTestEnv();
     const exp = `
     (begin
     (define iter (lambda (x) (if (= 0 x) x (iter (- x 1)))))
@@ -115,7 +120,7 @@ describe("application tests", () => {
     expect(0).to.be.equal(result);
   });
   it("can evaluate an expression", () => {
-    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const env = createTestEnv();
     const exp = `
     (begin
       (define x (quote (+ 1 2 3)))
@@ -126,7 +131,7 @@ describe("application tests", () => {
     expect(6).to.be.equal(result);
   });
   it("can read a file", () => {
-    const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+    const env = createTestEnv();
     const exp = `
     (begin
       (define file-contents (read-file (quote ./scheme/basic.scm)))

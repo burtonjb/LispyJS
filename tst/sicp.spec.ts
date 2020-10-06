@@ -2,15 +2,20 @@ import { expect } from "chai";
 import "mocha";
 
 import { parse } from "../src/lib/parser";
-import { createReplEnv } from "../src/lib/environment";
+import { createReplEnv, Environment } from "../src/lib/environment";
 import { logicBuiltIns } from "../src/lib/env/logic_env";
 import { mathBuiltIns } from "../src/lib/env/math_env";
 import { evalExpression } from "../src/lib/runtime";
+import { betaEnvBuiltIns } from "../src/lib/env/beta_env";
+
+function createTestEnv(): Environment {
+  return createReplEnv(logicBuiltIns, mathBuiltIns, betaEnvBuiltIns);
+}
 
 describe("example code in SICP should run", () => {
   describe("chapter 1", () => {
     it("adds numbers", () => {
-      const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+      const env = createTestEnv();
       const exp = `
     (+ 137 349 )
     `;
@@ -19,7 +24,7 @@ describe("example code in SICP should run", () => {
     });
 
     it("multiplies numbers", () => {
-      const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+      const env = createTestEnv();
       const exp = `
     (* 25 4 12 )
     `;
@@ -28,7 +33,7 @@ describe("example code in SICP should run", () => {
     });
 
     it("does some random math", () => {
-      const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+      const env = createTestEnv();
       const exp = `
     (+ (* 3 (+ (* 2 4) (+ 3 5))) (+ (- 10 7) 6))
     `;
@@ -37,7 +42,7 @@ describe("example code in SICP should run", () => {
     });
 
     it("can calculate the circumference of a circle", () => {
-      const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+      const env = createTestEnv();
       const exp = `
     (begin 
         (define pi 3.14159)
@@ -51,7 +56,7 @@ describe("example code in SICP should run", () => {
     });
 
     it("should define a function to square numbers", () => {
-      const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+      const env = createTestEnv();
       const exp = `
     (begin 
         (define square (lambda (x) (* x x)))
@@ -63,7 +68,7 @@ describe("example code in SICP should run", () => {
     });
 
     it("should add results from a function call together", () => {
-      const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+      const env = createTestEnv();
       const exp = `
     (begin 
         (define square (lambda (x) (* x x)))
@@ -79,7 +84,7 @@ describe("example code in SICP should run", () => {
     it("should support defining an abs function", () => {
       //TODO: cond is used in the book, but I haven't implemented it. Fix this if I do implement it
 
-      const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+      const env = createTestEnv();
       const exp = `
       (begin 
           (define abs (lambda (x) (
@@ -95,7 +100,7 @@ describe("example code in SICP should run", () => {
     });
 
     it("should evaluate when a number is between 5 and 10", () => {
-      const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+      const env = createTestEnv();
       const exp = `
     (begin 
         (define x 7)
@@ -115,7 +120,7 @@ describe("example code in SICP should run", () => {
       expect(false).to.be.equal(result2);
     });
     it("Newton's method square root function", () => {
-      const env = createReplEnv(logicBuiltIns, mathBuiltIns);
+      const env = createTestEnv();
       const exp = `
       (begin 
         (define abs 

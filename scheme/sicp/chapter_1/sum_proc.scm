@@ -8,13 +8,13 @@
   (define inc (lambda (n) (+ n 1)))
   (define cube (lambda (n) (* n n n )))
   (define sum-cubes (lambda (a b) (sum cube a inc b)))
-  (print (quote sum-cubs) (sum-cubes 1 10))
+  (printv (quote sum-cubs) (sum-cubes 1 10))
 
   (define identity (lambda (x) x))
   (define sum-integers (lambda (a b) 
     (sum identity a inc b)
   ))
-  (print (quote sum-integers) (sum-integers 1 10))
+  (printv (quote sum-integers) (sum-integers 1 10))
 
   (define integral 
     (lambda (f a b dx) 

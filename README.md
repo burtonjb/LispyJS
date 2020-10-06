@@ -262,7 +262,7 @@ An example macro is below. Its `let` which is one of the derived special forms.
 A macro consists of two parts:
 
 1. A set of expressions used to establish that certain identifiers are macro keywords, associate them with macro transformers, and control the scope within  which a macro is defined
-2. • a pattern language for specifying macro transformers.
+2. a pattern language for specifying macro transformers.
 
 
 | form | syntax| semantics| example | 
