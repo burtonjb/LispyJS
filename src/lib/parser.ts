@@ -23,7 +23,14 @@ function atomize(token: string): atom {
  */
 function tokenize(input: string): Array<string> {
   const removeComments = input.replace(/;.*/gi, " ");
-  const fixWhitespace = removeComments.replace(/\n/g, " ").replace(/\s+/g, " ");
+
+  // Pretty dumb but quick way to expand out all the ' characters into quote statements. Only works on single words
+  // This doesn't actually work since '(a b c) does not output the right value (it outputs syntax error)
+  // Its also just done poorly, it really should work on tokens and not on unparsed strings.
+  const quoteHack = removeComments.replace(/'(\w+)/g, `( quote $1 )`);
+
+  const fixWhitespace = quoteHack.replace(/\n/g, " ").replace(/\s+/g, " ");
+
   const addSpacesOnBrackets = fixWhitespace
     .replace(/\(/gi, " ( ")
     .replace(/\)/gi, " ) ");

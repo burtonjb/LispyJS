@@ -44,6 +44,9 @@ function createBaseEnv() {
 
     parse: (args) => parse(args[0]),
     "read-file": (args) => readFileSync(args[0], "utf8"),
+    assert: (args) => {
+      if (!args[0]) throw Error(args.slice(1));
+    }, // if args[0] is not true, then throw an exception. The exception message is the rest of the args
 
     print: (args) => {
       console.log(args[0]);

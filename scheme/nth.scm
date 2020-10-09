@@ -7,7 +7,7 @@
   ))
   (define range-iter (lambda (current stop l) 
     (if (= current stop) 
-      l
+      (car l)
       (cons current (range-iter (+ current 1) stop l))
     )
   ))
@@ -21,6 +21,6 @@
 
   (define ri (range-iter 0 10 nil))
   (print ri)
-  (printflat ri)
+  (nth ri 5)
   nil
 )

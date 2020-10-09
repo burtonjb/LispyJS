@@ -29,7 +29,7 @@ function repl(): any {
         const parsedInput = parse(input);
         console.log(evalExpression(parsedInput, replEnv));
       } catch (e) {
-        console.warn(e.message);
+        console.error("\x1b[31m", e.message, "\x1b[0m"); // display the error in red!
       }
       readlines();
     });

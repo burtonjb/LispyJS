@@ -46,7 +46,7 @@ export function define(exp: list, env: environment): expression {
     );
   }
   const symbol = exp[1];
-  if (!isString(symbol)) {
+  if (typeof symbol != "string") {
     throw new DefineError(
       `Unable to bind variable to non-symbolic value. Expression was: ${exp}`
     );

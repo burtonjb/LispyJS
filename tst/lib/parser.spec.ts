@@ -8,6 +8,10 @@ describe("tokenize", () => {
     const actual = tokenize("(this  is     expression)");
     expect(["(", "this", "is", "expression", ")"]).to.eql(actual);
   });
+  it("will expand out quotes", () => {
+    const actual = tokenize("'x");
+    expect(["(", "quote", "x", ")"]).to.eql(actual);
+  });
 });
 
 describe("constructExpression", () => {
