@@ -12,10 +12,10 @@
     "lint-fix": "eslint . --ext .ts --fix",
     "prettier": "npx prettier --write 'src/**/*.ts' 'tst/**/*.ts' 'src/**/*.js'",
     "format": "run-s prettier",
-    "test": "mocha -r ts-node/register 'tst/{**/*.spec.ts, *.spec.ts}'",
+    "test": "npx mocha -r ts-node/register 'tst/{**/*.spec.ts, *.spec.ts}'",
     "super-clean": "rm -r dist node_modules",
     "inc": "run-s build prettier lint-fix test",
-    "cp-resources": "cp -r public dist/", 
+    "cp-resources": "cp -r public dist/",
     "release": "run-s clean inc cp-resources",
     "repl": "npx ts-node src/repl.ts",
     "main": "npx ts-node src/main.ts"
