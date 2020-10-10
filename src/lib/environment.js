@@ -35,6 +35,7 @@ class Environment {
 
 function createBaseEnv() {
   const builtIns = {
+    // This should probably go into a different file
     list: (args) => args,
     nil: [],
 

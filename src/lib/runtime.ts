@@ -1,6 +1,4 @@
 import { expression, environment, list } from "./types";
-import { isString } from "./helpers";
-import { isArray } from "util";
 import { define, set, quote, evalIf, createLambda } from "./checkedSpecials";
 import { NativeLambda, Lambda } from "./lambda";
 
@@ -15,14 +13,14 @@ function evalExpression(exp: expression, env: environment): any {
     }
 
     // Variable reference
-    if (isString(exp)) {
+    if (typeof exp == "string") {
       if (env.find(exp as string) == undefined) {
         return undefined; // Should throw on unbound symbol?
       }
       return env.find(exp as string).map[exp as string];
     }
     // constant
-    else if (!isArray(exp)) {
+    else if (!Array.isArray(exp)) {
       return exp;
     }
     exp = exp as list; /* The variable reference/constant expression cases above would
