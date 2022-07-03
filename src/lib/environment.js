@@ -64,6 +64,10 @@ function createBaseEnv() {
 
     "#t": true,
     "#f": false,
+
+    exit: (args) => {
+      process.exit(args[0]);
+    },
   };
   for (const [key, value] of Object.entries(builtIns)) {
     if (typeof value == "function") {

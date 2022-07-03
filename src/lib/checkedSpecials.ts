@@ -66,7 +66,7 @@ export function set(exp: list, env: environment): expression {
       `Incorrect number of arguments to set!. Expression was: ${exp}`
     );
   }
-  if (!isString(symbol)) {
+  if (!(typeof symbol === "string")) {
     throw new SetError(
       `Unable to set! variable to non-symbolic value. Expression was: ${exp}`
     );

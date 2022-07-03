@@ -1,6 +1,6 @@
-import { logicBuiltIns } from "./logic_env";
-import { mathBuiltIns } from "./math_env";
-import { betaEnvBuiltIns } from "./beta_env";
-import { stringBuiltIns } from "./string_env";
+import { logicBuiltIns } from "./logic-env";
+import { mathBuiltIns } from "./math-env";
+import { betaEnvBuiltIns } from "./beta-env";
+import { stringBuiltIns } from "./string-env";
 
 export { logicBuiltIns, mathBuiltIns, betaEnvBuiltIns, stringBuiltIns };

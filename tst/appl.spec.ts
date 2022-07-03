@@ -3,9 +3,9 @@ import "mocha";
 
 import { parse } from "../src/lib/parser";
 import { createReplEnv, Environment } from "../src/lib/environment";
-import { logicBuiltIns } from "../src/lib/env/logic_env";
-import { mathBuiltIns } from "../src/lib/env/math_env";
-import { betaEnvBuiltIns } from "../src/lib/env/beta_env";
+import { logicBuiltIns } from "../src/lib/env/logic-env";
+import { mathBuiltIns } from "../src/lib/env/math-env";
+import { betaEnvBuiltIns } from "../src/lib/env/beta-env";
 import { evalExpression } from "../src/lib/runtime";
 
 function createTestEnv(): Environment {
