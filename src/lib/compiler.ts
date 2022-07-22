@@ -1,27 +1,4 @@
-import { readFileSync, writeFileSync } from "fs";
-import { parse } from "./lib/parser";
-/* eslint-disable */
-
-import { expression, list } from "./lib/types";
-
-/*
- * This takes in an s-expression and outputs a string that is the transpiled javascript
- * Ideally it should output a list of tokens that get converted to javascript, but I'm pretty lazy
- */
-
-export function compile(exp: expression): string {
-  let out = `
-/* built-ins */
-let sum = (...args) => args.reduce((acc, cur) => acc + cur);
-let sub = (...args) => args.reduce((acc, cur) => acc - cur);
-let equals = (...args) => args.every((val, i, arr) => val === arr[0]);
-/* end built-ins */
-
-`; // these are somewhat different than what I defined earlier, but naming functions +, -, or = will result in syntax errors in javascript. I guess there could be a translation step, but I don't really think its necessary right now
-
-  out += internalCompile(exp);
-  return out;
-}
+import { expression, list } from "./types";
 
 export function internalCompile(exp: expression): string {
   if (typeof exp == "string") {
@@ -62,11 +39,30 @@ export function internalCompile(exp: expression): string {
   } else if (car == "lambda") {
     const paramNames = cdr[0] as list;
     const body = internalCompile(cdr[1]);
-    return `(${paramNames.join(", ")}) => {return ${body};}`;
+    return `(${paramNames.join(", ")}) => {return ${body};}\n`;
   } else {
     // assume its a function call
     const f = car;
     const args = cdr;
     return `${f}(${args})`;
   }
+}
+
+/*
+ * This takes in an s-expression and outputs a string that is the transpiled javascript
+ * Ideally it should output a list of tokens that get converted to javascript, but I'm pretty lazy
+ */
+
+export function compile(exp: expression): string {
+  let out = `
+/* built-ins */
+let sum = (...args) => args.reduce((acc, cur) => acc + cur);
+let sub = (...args) => args.reduce((acc, cur) => acc - cur);
+let equals = (...args) => args.every((val, i, arr) => val === arr[0]);
+/* end built-ins */
+
+`; // these are somewhat different than what I defined earlier, but naming functions +, -, or = will result in syntax errors in javascript. I guess there could be a translation step, but I don't really think its necessary right now
+
+  out += internalCompile(exp);
+  return out;
 }

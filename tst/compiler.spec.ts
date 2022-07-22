@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 
-import { internalCompile } from "../src/compiler";
+import { internalCompile } from "../src/lib/compiler";
 import { parse } from "../src/lib/parser";
 
 describe("Compiler", () => {
@@ -91,16 +91,18 @@ let b = 2;
       (lambda (x y) (sum x y))
     `;
     const result = internalCompile(parse(exp));
-    expect(result).to.eql(`(x, y) => {return sum(x,y);}`);
+    expect(result).to.eql(`(x, y) => {return sum(x,y);}
+`);
   });
 
   it("Compiles a lambda expression and sets it to a variable", () => {
     const exp = `
       (define f (lambda (x y) (sum x y)))
-    `;
+`;
     const result = internalCompile(parse(exp));
     expect(result).to.eql(
-      `let f = (x, y) => {return sum(x,y);};
+      `let f = (x, y) => {return sum(x,y);}
+;
 `
     );
   });

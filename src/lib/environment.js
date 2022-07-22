@@ -2,7 +2,8 @@
 
 import { NativeLambda } from "./lambda";
 import { parse } from "./parser";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
+import { compile, internalCompile } from "./compiler";
 
 class Environment {
   constructor(map, parent) {
@@ -43,8 +44,13 @@ function createBaseEnv() {
     "-": (args) => args.reduce((acc, cur) => acc - cur),
     "=": (args) => args.every((val, i, arr) => val === arr[0]),
 
-    parse: (args) => parse(args[0]),
     "read-file": (args) => readFileSync(args[0], "utf8"),
+    "write-file": (args) => writeFileSync(args[0], args[1], "utf8"),
+
+    parse: (args) => parse(args[0]),
+    compile: (args) => compile(args[0]),
+    "internal-compile": (args) => internalCompile(args[0]),
+
     assert: (args) => {
       if (!args[0]) throw Error(args.slice(1));
     }, // if args[0] is not true, then throw an exception. The exception message is the rest of the args

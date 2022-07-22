@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from "fs";
-import { compile } from "./compiler";
+import { compile } from "./lib/compiler";
 import { parse } from "./lib/parser";
 
 function compileFile(): any {
