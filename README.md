@@ -1,6 +1,6 @@
 # LispyJS
 The project is a scheme interpreter, written in javascript.
-Its based on the R5RS spec, mostly because that one has/had a nice PDF for the language spec
+Its based on the ~~R5RS~~ R7RS spec (though very very incomplete), mostly because that one has/had a nice PDF for the language spec.
 
 Its hosted as a static website that you can find here: https://burtonjb.github.io/LispyJS/
 
@@ -269,7 +269,13 @@ A macro consists of two parts:
 |--|--|--|--|
 | define-syntax | (define-syntax keyword (transformer spec))| keyword is the identifier for the new macro and  | (eval (quote (x))) => evaluates x as if it was an input command|
 
-
+## TODOS:
+* Convert docs to tutorial
+* Update webapp to include build artifacts from this version (currently the webpage is using the V1 version of the language)
+* Proper language spec
+* Fix bugs in compiler
+* Finish scheme features in compiler/interpreter
+* Make it self-hosting
 
 ## Sources:
 * https://schemers.org/Documents/Standards/R5RS/r5rs.pdf

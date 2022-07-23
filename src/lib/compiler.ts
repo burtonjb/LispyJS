@@ -12,6 +12,17 @@ export function internalCompile(exp: expression): string {
   const car = exp[0];
   const cdr = exp.slice(1);
 
+  /* 
+  TODO: there are a couple problems with the current compile implementation:
+  1. In scheme all expression return a value. Not all expression in javascript return a value. This is really apparent
+  in the "if" statement, which cannot be used the same way as in scheme.
+  Translating (define x (if (= 1 2) 1 2)) does not translate to x = if (1 == 2) 1 else 2. 
+  2. Scoping rules are different. I could fix the first problem by making everything a function and returning all 
+  values from there, but then "define" statements in "if" statements would not work as expected. 
+
+  But the high-level idea is fine. It takes in the tree, parses some special cases and then defaults to a function 
+  call. Its similar/the same as both the interpreter and the type-checking algorithms. 
+  */
   if (car == "define") {
     const vari = cdr[0];
     const val = internalCompile(cdr[1]);
@@ -29,7 +40,7 @@ export function internalCompile(exp: expression): string {
     const condition = internalCompile(cdr[0]);
     const trueBranch = internalCompile(cdr[1]);
     const falseBranch = internalCompile(cdr[2]);
-    return `if (${condition})\n\t{${trueBranch}}\n\telse{${falseBranch}}\n`;
+    return `if (${condition}) {\n\t${trueBranch}} else {\n\t${falseBranch}}\n`;
   } else if (car == "begin") {
     let out = "";
     cdr.forEach((v: expression) => {
@@ -38,8 +49,8 @@ export function internalCompile(exp: expression): string {
     return out;
   } else if (car == "lambda") {
     const paramNames = cdr[0] as list;
-    const body = internalCompile(cdr[1]);
-    return `(${paramNames.join(", ")}) => {return ${body};}\n`;
+    const body = internalCompile(cdr[1]); // FIXME: need to handle multi-line body statements (if, begin)
+    return `(${paramNames.join(", ")}) => {return ${body};};\n`;
   } else {
     // assume its a function call
     const f = car;

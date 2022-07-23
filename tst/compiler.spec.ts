@@ -59,7 +59,7 @@ describe("Compiler", () => {
     `;
     const result = internalCompile(parse(exp));
     expect(result).to.eql(
-      `if (equals(1,2))\n\t{let a = 1;\n}\n\telse{let a = 3;\n}\n`
+      `if (equals(1,2)) {\n\tlet a = 1;\n} else {\n\tlet a = 3;\n}\n`
     );
   });
 
@@ -91,7 +91,7 @@ let b = 2;
       (lambda (x y) (sum x y))
     `;
     const result = internalCompile(parse(exp));
-    expect(result).to.eql(`(x, y) => {return sum(x,y);}
+    expect(result).to.eql(`(x, y) => {return sum(x,y);};
 `);
   });
 
@@ -101,7 +101,7 @@ let b = 2;
 `;
     const result = internalCompile(parse(exp));
     expect(result).to.eql(
-      `let f = (x, y) => {return sum(x,y);}
+      `let f = (x, y) => {return sum(x,y);};
 ;
 `
     );
